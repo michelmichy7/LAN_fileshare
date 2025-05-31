@@ -5,6 +5,8 @@ project(LAN_fileshare VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Network)
+#target_link_libaries(appLAN_fileshare PRIVATE Qt6::Network)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -15,8 +17,13 @@ qt_add_executable(appLAN_fileshare
 qt_add_qml_module(appLAN_fileshare
     URI LAN_fileshare
     VERSION 1.0
+    SOURCES
+
     QML_FILES
-        Main.qml
+        ui/Main.qml
+        SOURCES Backend/backend.h Backend/backend.cpp
+        QML_FILES ui/Send_UI.qml
+        QML_FILES ui/Receive_UI.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
