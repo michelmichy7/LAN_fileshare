@@ -32,7 +32,9 @@ Window {
             Button {
                 text: "Send"
                 onClicked: {
+                    backend.find_Lan_Devices()
                     loader.source = "Send_UI.qml"
+
                 }
             }
 
