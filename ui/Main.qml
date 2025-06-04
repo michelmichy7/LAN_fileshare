@@ -32,8 +32,8 @@ Window {
             Button {
                 text: "Send"
                 onClicked: {
-                    backend.find_Lan_Devices()
-                    loader.source = "Send_UI.qml"
+                    backend.beSender()
+                    //loader.source = "Send_UI.qml"
 
                 }
             }
@@ -41,7 +41,8 @@ Window {
             Button {
                 text: "Claim"
                 onClicked: {
-                    loader.source = "Receive_UI.qml"
+                    backend.beReceiver()
+                    //loader.source = "Receive_UI.qml"
                 }
             }
         }

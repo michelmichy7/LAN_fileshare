@@ -9,12 +9,22 @@ class Backend : public QObject
     Q_OBJECT
 public:
     explicit Backend(QObject *parent = nullptr);
-    Q_INVOKABLE void find_Lan_Devices();
+    Q_INVOKABLE void beSender();
+    Q_INVOKABLE void beReceiver();
+
+
 
 private:
     QUdpSocket *senderSocket = nullptr;
+    QUdpSocket *receiverSocket;
+
+    void findToSend();
+    void findToReceive();
 
 signals:
+private slots:
+    void onReadyRead();
 };
+
 
 #endif // BACKEND_H
