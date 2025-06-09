@@ -7,24 +7,7 @@ Backend::Backend(QObject *parent)
     : QObject{parent}
 {}
 
-void Backend::onReadyRead() {
-    while (receiverSocket->hasPendingDatagrams()) {
-        QByteArray datagram;
-        QHostAddress sender;
-        quint16 senderPort;
 
-        datagram.resize(receiverSocket->pendingDatagramSize());
-        receiverSocket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
-
-        qDebug() << "Received: " << datagram << "from" << sender.toString() << senderPort;
-
-        if (datagram == "DISCOVER_DEVICES") {
-            QByteArray response = "DISCOVER_RESPONSE";
-            receiverSocket->writeDatagram(response, sender, senderPort);
-            qDebug() << "Sent response to" << sender.toString();
-        }
-    }
-}
 
 void Backend::findToSend() {
     qDebug() << "Code runs!";
@@ -41,6 +24,25 @@ void Backend::findToSend() {
     senderSocket->writeDatagram(message, broadcastAddress, port);
 }
 
+void Backend::onReadyRead() {
+    while (receiverSocket->hasPendingDatagrams()) {
+        QByteArray datagram;
+        QHostAddress sender;
+        quint16 senderPort;
+
+        datagram.resize(receiverSocket->pendingDatagramSize());
+        receiverSocket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
+
+        qDebug() << "Received: " << datagram << "from" << sender.toString() << senderPort;
+
+        if (datagram == "DISCOVER_DEVICES") {
+            QByteArray response = "DISCOVER_DEVICES";
+            receiverSocket->writeDatagram(response, sender, senderPort);
+            qDebug() << "Sent response to" << sender.toString();
+        }
+    }
+}
+
 void Backend::findToReceive() {
     receiverSocket = new QUdpSocket(this);
 
@@ -54,7 +56,6 @@ void Backend::findToReceive() {
     connect(receiverSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
 
     qDebug() << "UDP Receiver is running on port 45454";
-
 }
 
 
