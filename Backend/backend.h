@@ -12,8 +12,6 @@ public:
     Q_INVOKABLE void beSender();
     Q_INVOKABLE void beReceiver();
 
-
-
 private:
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *receiverSocket;
@@ -21,7 +19,6 @@ private:
     void findToSend();
     void findToReceive();
 
-signals:
 private slots:
     void onReadyRead();
 };

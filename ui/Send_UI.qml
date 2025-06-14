@@ -11,7 +11,11 @@ Item {
         color: "#141414"
 
         ListView {
+<<<<<<< HEAD
             model:
+=======
+            //model:
+>>>>>>> 1fabce4f2a88104eb18d13ba9862a44c6d0aa14d
         }
 
         }
