@@ -9,5 +9,10 @@ Item {
         anchors.fill: parent
         anchors.centerIn: parent
         color: "#141414"
+
+        ListView {
+            model:
+        }
+
         }
     }
