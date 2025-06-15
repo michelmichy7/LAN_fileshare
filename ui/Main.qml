@@ -20,6 +20,12 @@ Window {
         Rectangle {
             width: 400; height: 275;
             anchors.centerIn: parent
+            Grid {
+                anchors.centerIn: parent
+                ListView {
+                    anchors.fill: parent
+                }
+            }
         }
     }
 }

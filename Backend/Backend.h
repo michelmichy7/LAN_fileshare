@@ -5,6 +5,7 @@
 #include <QUdpSocket>
 #include <QDebug>
 #include <QList>
+#include <QPair>
 
 class Backend : public QObject
 {
@@ -26,8 +27,23 @@ private slots:
 
 
 //      --Managing--
+public:
+    QList<QPair<QString, QString>> computers;
+
+    Q_INVOKABLE QString getPcName(int index) const {
+        if (index >= 0 && index < computers.size()) {
+            return computers[index].first;
+        }
+        return QString();
+    }
+    Q_INVOKABLE QString getPcIp(int index) const {
+        if (index >= 0 && index < computers.size()) {
+            return computers[index].second;
+        }
+        return QString();
+    }
 private:
-    QList<QString>computer_items;
+
 };
 
 
