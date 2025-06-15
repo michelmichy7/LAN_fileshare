@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic
-import Manager 1.0
-
 Window {
     width: 640
     height: 480
@@ -15,9 +13,6 @@ Window {
         anchors.fill: parent
         z: 3
 
-    }
-    Backend {
-        id: backend
     }
 
     Rectangle {

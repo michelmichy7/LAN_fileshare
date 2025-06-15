@@ -4,10 +4,13 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QDebug>
+#include <QList>
 
 class Backend : public QObject
 {
     Q_OBJECT
+
+//          --UDP Finder--
 public:
     explicit Backend(QObject *parent = nullptr);
     void sendPacket();
@@ -15,14 +18,16 @@ public:
 
 
 private:
-
-    //void findToSend();
-    //void findToReceive();
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
     QHostAddress senderIP;
 private slots:
     void onReadyRead();
+
+
+//      --Managing--
+private:
+    QList<QString>computer_items;
 };
 
 
