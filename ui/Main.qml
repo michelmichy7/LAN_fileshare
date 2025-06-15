@@ -21,30 +21,10 @@ Window {
     }
 
     Rectangle {
-        anchors.centerIn: parent
-
-
-
-     Column {
-        anchors.centerIn: parent
-        spacing: 25
-
-            Button {
-                text: "Send"
-                onClicked: {
-                    backend.beSender()
-                    //loader.source = "Send_UI.qml"
-
-                }
-            }
-
-            Button {
-                text: "Claim"
-                onClicked: {
-                    backend.beReceiver()
-                    //loader.source = "Receive_UI.qml"
-                }
-            }
+    anchors.centerIn: parent
+        Rectangle {
+            width: 400; height: 275;
+            anchors.centerIn: parent
         }
     }
 }

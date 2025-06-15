@@ -21,9 +21,10 @@ qt_add_qml_module(appLAN_fileshare
 
     QML_FILES
         ui/Main.qml
-        SOURCES Backend/backend.h Backend/backend.cpp
+        SOURCES Backend/Backend.h Backend/UDP_searchAround.cpp
         QML_FILES ui/Send_UI.qml
         QML_FILES ui/Receive_UI.qml
+        SOURCES
         SOURCES
 )
 

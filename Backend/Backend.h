@@ -3,22 +3,24 @@
 
 #include <QObject>
 #include <QUdpSocket>
+#include <QDebug>
 
 class Backend : public QObject
 {
     Q_OBJECT
 public:
     explicit Backend(QObject *parent = nullptr);
-    Q_INVOKABLE void beSender();
-    Q_INVOKABLE void beReceiver();
+    void sendPacket();
+    void catchPacket();
+
 
 private:
+
+    //void findToSend();
+    //void findToReceive();
     QUdpSocket *senderSocket = nullptr;
-    QUdpSocket *receiverSocket;
-
-    void findToSend();
-    void findToReceive();
-
+    QUdpSocket *catcherSocket = nullptr;
+    QHostAddress senderIP;
 private slots:
     void onReadyRead();
 };
