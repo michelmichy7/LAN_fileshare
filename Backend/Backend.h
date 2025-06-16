@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QList>
 #include <QPair>
+#include <QHostAddress>
 
 class Backend : public QObject
 {
@@ -22,6 +23,7 @@ private:
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
     QHostAddress senderIP;
+    QString senderIPadd = senderIP.toString();
 private slots:
     void onReadyRead();
 
@@ -29,6 +31,10 @@ private slots:
 //      --Managing--
 public:
     QList<QPair<QString, QString>> computers;
+
+    Q_INVOKABLE int getPcsCount() const {
+        return computers.size();
+    }
 
     Q_INVOKABLE QString getPcName(int index) const {
         if (index >= 0 && index < computers.size()) {

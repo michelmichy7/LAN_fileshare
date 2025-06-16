@@ -45,6 +45,7 @@ void Backend::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
+            computers.push_back({senderIPadd, "he"});
         }
     }
 

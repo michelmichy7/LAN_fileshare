@@ -24,6 +24,17 @@ Window {
                 anchors.centerIn: parent
                 ListView {
                     anchors.fill: parent
+                    model: computers
+                        id: visualModel
+
+                delegate: Rectangle {
+                    width: 50; height: 50
+                    color: blue
+                    Text {
+                        anchors.fill: parent
+                        text: computers.getPcName();
+                    }
+                }
                 }
             }
         }
