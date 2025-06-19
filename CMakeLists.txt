@@ -21,12 +21,15 @@ qt_add_qml_module(appLAN_fileshare
 
     QML_FILES
         ui/Main.qml
-        SOURCES Backend/Backend.h Backend/UDP_searchAround.cpp
-        QML_FILES ui/Send_UI.qml
-        QML_FILES ui/Receive_UI.qml
-        SOURCES
-        SOURCES
-        SOURCES Backend/TCP_Sharing.cpp
+        SOURCES Backend/Backend.h Backend/UDP_searchAround.cpp Backend/TCP_Sharing.cpp
+        QML_FILES ui/Send_UI.qml ui/Receive_UI.qml
+        QML_FILES ui/Icons/qml/ComputerIcon.qml
+)
+
+qt_add_resources(appLAN_fileshare "resources"
+    PREFIX /
+    FILES
+        ui/Icons/Computer4x.png
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

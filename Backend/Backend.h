@@ -7,6 +7,7 @@
 #include <QList>
 #include <QPair>
 #include <QHostAddress>
+#include <QStringListModel>
 
 class Backend : public QObject
 {
@@ -30,27 +31,25 @@ private slots:
 
 //      --Managing--
 public:
-    QList<QPair<QString, QString>> computers;
 
-    Q_INVOKABLE int getPcsCount() const {
-        return computers.size();
-    }
 
-    Q_INVOKABLE QString getPcName(int index) const {
-        if (index >= 0 && index < computers.size()) {
-            return computers[index].first;
-        }
-        return QString();
-    }
-    Q_INVOKABLE QString getPcIp(int index) const {
-        if (index >= 0 && index < computers.size()) {
-            return computers[index].second;
-        }
-        return QString();
-    }
+
 private:
-
 };
+
+class ListModel : public QStringListModel
+{
+    Q_OBJECT
+public:
+    explicit ListModel (QObject *parent = nullptr)
+        : QStringListModel(parent)
+    {
+        setStringList(QStringList());
+    }
+   // Q_INVOKABLE void handleItemClick(int index);
+};
+
+
 
 
 #endif // BACKEND_H

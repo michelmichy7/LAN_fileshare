@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic
+import "Icons/qml"
+
 Window {
     width: 640
     height: 480
@@ -12,10 +14,8 @@ Window {
         id: loader
         anchors.fill: parent
         z: 3
-
     }
-
-    Rectangle {
+Rectangle {
     anchors.centerIn: parent
         Rectangle {
             width: 400; height: 275;
@@ -24,15 +24,13 @@ Window {
                 anchors.centerIn: parent
                 ListView {
                     anchors.fill: parent
-                    model: computers
-                        id: visualModel
+                    model: backend
 
                 delegate: Rectangle {
                     width: 50; height: 50
-                    color: blue
-                    Text {
-                        anchors.fill: parent
-                        text: computers.getPcName();
+                    color: "blue"
+                    ComputerIcon {
+
                     }
                 }
                 }

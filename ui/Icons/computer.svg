@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 226 220">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="14.5" y1="73.5" x2="211.5" y2="73.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#cce0f4"/>
+      <stop offset=".06" stop-color="#c2dcf2"/>
+      <stop offset=".15" stop-color="#a9d2ee"/>
+      <stop offset=".27" stop-color="#7fc2e7"/>
+      <stop offset=".41" stop-color="#46abdd"/>
+      <stop offset=".51" stop-color="#1e9cd7"/>
+      <stop offset=".87" stop-color="#0075be"/>
+      <stop offset=".99" stop-color="#005b97"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <g>
+        <rect x=".5" y=".5" width="225" height="145" rx="17.5" ry="17.5"/>
+        <path d="M208,1c9.37,0,17,7.63,17,17v110c0,9.37-7.63,17-17,17H18c-9.37,0-17-7.63-17-17V18C1,8.63,8.63,1,18,1h190M208,0H18C8.06,0,0,8.06,0,18v110c0,9.94,8.06,18,18,18h190c9.94,0,18-8.06,18-18V18c0-9.94-8.06-18-18-18h0Z"/>
+      </g>
+      <g>
+        <path d="M40.25,219.5c-11.44,0-20.75-9.31-20.75-20.75v-16.5c0-10.34,8.41-18.75,18.75-18.75h149.5c10.34,0,18.75,8.41,18.75,18.75v18.5c0,10.34-8.41,18.75-18.75,18.75H40.25Z"/>
+        <path d="M187.75,164c10.06,0,18.25,8.19,18.25,18.25v18.5c0,10.06-8.19,18.25-18.25,18.25H40.25c-11.17,0-20.25-9.08-20.25-20.25v-16.5c0-10.06,8.19-18.25,18.25-18.25h149.5M187.75,163H38.25c-10.63,0-19.25,8.62-19.25,19.25v16.5c0,11.74,9.51,21.25,21.25,21.25h147.5c10.63,0,19.25-8.62,19.25-19.25v-18.5c0-10.63-8.62-19.25-19.25-19.25h0Z"/>
+      </g>
+      <g>
+        <rect class="cls-1" x="34.5" y="177.5" width="12" height="6"/>
+        <path d="M46,178v5h-11v-5h11M47,177h-13v7h13v-7h0Z"/>
+      </g>
+      <g>
+        <rect class="cls-1" x="54.5" y="177.5" width="12" height="6"/>
+        <path d="M66,178v5h-11v-5h11M67,177h-13v7h13v-7h0Z"/>
+      </g>
+      <g>
+        <rect class="cls-2" x="14.5" y="13.5" width="197" height="120" rx="5.2" ry="5.2"/>
+        <path d="M206.3,14c2.59,0,4.7,2.11,4.7,4.7v109.6c0,2.59-2.11,4.7-4.7,4.7H19.7c-2.59,0-4.7-2.11-4.7-4.7V18.7c0-2.59,2.11-4.7,4.7-4.7h186.6M206.3,13H19.7c-3.15,0-5.7,2.55-5.7,5.7v109.6c0,3.15,2.55,5.7,5.7,5.7h186.6c3.15,0,5.7-2.55,5.7-5.7V18.7c0-3.15-2.55-5.7-5.7-5.7h0Z"/>
+      </g>
+    </g>
+  </g>
+</svg>
