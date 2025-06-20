@@ -21,6 +21,8 @@ public:
 
 
 private:
+    QStringListModel* m_listModel;
+    QStringList currentList = m_listModel->stringList();
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
     QHostAddress senderIP;
@@ -46,10 +48,8 @@ public:
     {
         setStringList(QStringList());
     }
-   // Q_INVOKABLE void handleItemClick(int index);
+    Q_INVOKABLE void handleDevClick(int index);
+    void changeDevList();
 };
-
-
-
 
 #endif // BACKEND_H

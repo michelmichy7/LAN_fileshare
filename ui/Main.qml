@@ -15,24 +15,30 @@ Window {
         anchors.fill: parent
         z: 3
     }
+
 Rectangle {
     anchors.centerIn: parent
-        Rectangle {
-            width: 400; height: 275;
-            anchors.centerIn: parent
+    Rectangle {
+        width: 200; height: 150;
+        radius: 20
+        anchors.centerIn: parent
             Grid {
+                spacing: 20
                 anchors.centerIn: parent
-                ListView {
-                    anchors.fill: parent
-                    model: backend
+                Repeater {
+                    model: listModel
+                    delegate: Button {
+                        width: 200; height: 150
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: "grey"
+                        }
 
-                delegate: Rectangle {
-                    width: 50; height: 50
-                    color: "blue"
-                    ComputerIcon {
-
+                        ComputerIcon {
+                            anchors.centerIn: parent
+                            z: 3
+                        }
                     }
-                }
                 }
             }
         }

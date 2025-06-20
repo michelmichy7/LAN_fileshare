@@ -29,6 +29,7 @@ void Backend::catchPacket() {
         bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
+            currentList.append(senderIP.toString());
             return;
         }
     }
@@ -41,13 +42,24 @@ void Backend::onReadyRead()
         datagram.resize(catcherSocket->pendingDatagramSize());
         quint16 senderPort;
 
+
+
         catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
-            //computers.push_back({senderIPadd, "he"});
+            m_listModel->append(senderIP.toString());
         }
     }
 
 }
 
+void ListModel::handleDevClick(int index)
+{
+
+}
+
+void ListModel::changeDevList()
+{
+
+}
