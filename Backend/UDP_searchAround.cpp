@@ -6,6 +6,7 @@
 Backend::Backend(QObject *parent)
     : QObject{parent}
 {
+    m_model = new ListModel(this);
     catchPacket();
     sendPacket();
 
@@ -29,7 +30,6 @@ void Backend::catchPacket() {
         bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
-            currentList.append(senderIP.toString());
             return;
         }
     }
@@ -46,12 +46,13 @@ void Backend::onReadyRead()
 
         catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
 
+       // QStringList devList = m_listModel->stringList();
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
-            m_listModel->append(senderIP.toString());
+            QString devName = senderIP.toString();
+            m_model->addItem(devName);
         }
     }
-
 }
 
 void ListModel::handleDevClick(int index)
@@ -59,7 +60,10 @@ void ListModel::handleDevClick(int index)
 
 }
 
-void ListModel::changeDevList()
-{
 
+void ListModel::addItem(const QString &item)
+{
+    QStringList list = stringList();
+    list.append(item);
+    setStringList(list);
 }

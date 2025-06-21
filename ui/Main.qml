@@ -19,7 +19,7 @@ Window {
 Rectangle {
     anchors.centerIn: parent
     Rectangle {
-        width: 200; height: 150;
+        width: 400; height: 300;
         radius: 20
         anchors.centerIn: parent
             Grid {
@@ -28,8 +28,9 @@ Rectangle {
                 Repeater {
                     model: listModel
                     delegate: Button {
-                        width: 200; height: 150
+                        width: 100; height: 100
                         background: Rectangle {
+                            radius: 20
                             anchors.fill: parent
                             color: "grey"
                         }

@@ -9,8 +9,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     Backend backend;
     engine.rootContext()->setContextProperty("backend", &backend);
-    ListModel m_model;
-    engine.rootContext()->setContextProperty("listModel", &m_model);
+    engine.rootContext()->setContextProperty("listModel", backend.model());
 
     QObject::connect(
         &engine,

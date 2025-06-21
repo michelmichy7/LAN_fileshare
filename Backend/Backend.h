@@ -9,20 +9,35 @@
 #include <QHostAddress>
 #include <QStringListModel>
 
+class ListModel : public QStringListModel
+{
+    Q_OBJECT
+public:
+    explicit ListModel (QObject *parent = nullptr)
+        : QStringListModel(parent)
+    {
+        setStringList(QStringList());
+    }
+    Q_INVOKABLE void handleDevClick(int index);
+    void changeDevList();
+    Q_INVOKABLE void addItem(const QString &item);
+};
+
 class Backend : public QObject
 {
     Q_OBJECT
 
 //          --UDP Finder--
 public:
+    //QStringList devList = model->stringList();
     explicit Backend(QObject *parent = nullptr);
+
+    ListModel* model() const { return m_model; }
     void sendPacket();
     void catchPacket();
 
-
 private:
-    QStringListModel* m_listModel;
-    QStringList currentList = m_listModel->stringList();
+    ListModel *m_model = nullptr;
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
     QHostAddress senderIP;
@@ -39,17 +54,6 @@ public:
 private:
 };
 
-class ListModel : public QStringListModel
-{
-    Q_OBJECT
-public:
-    explicit ListModel (QObject *parent = nullptr)
-        : QStringListModel(parent)
-    {
-        setStringList(QStringList());
-    }
-    Q_INVOKABLE void handleDevClick(int index);
-    void changeDevList();
-};
+
 
 #endif // BACKEND_H
