@@ -16,29 +16,55 @@ Window {
         z: 3
     }
 
-Rectangle {
-    anchors.centerIn: parent
     Rectangle {
-        width: 400; height: 300;
-        radius: 20
+        width: 100
+        height: 100
         anchors.centerIn: parent
-            Grid {
-                spacing: 20
-                anchors.centerIn: parent
-                Repeater {
-                    model: listModel
-                    delegate: Button {
-                        width: 100; height: 100
-                        background: Rectangle {
-                            radius: 20
-                            anchors.fill: parent
-                            color: "grey"
-                        }
+        color: "#141414"
 
-                        ComputerIcon {
-                            anchors.centerIn: parent
-                            z: 3
-                        }
+
+
+        Column {
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 40
+
+            Text {
+                       text: "How do you want to transfer?"
+                       color: "white"
+                       anchors.horizontalCenter: parent.horizontalCenter
+                   }
+
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: loader.source = "Send_UI.qml"
+                background: Rectangle {
+                    anchors.centerIn: parent
+                    width: 95
+                    height: 40
+                    radius: 15
+                    color: "white"
+                    Text {
+                        text: "Send"
+                        color: "black"
+                        anchors.centerIn: parent
+                    }
+                }
+
+            }
+
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: loader.source = "Receive_UI.qml"
+                background: Rectangle {
+                    anchors.centerIn: parent
+                    width: 95
+                    height: 40
+                    radius: 15
+                    color: "white"
+                    Text {
+                        text: "Receive"
+                        color: "black"
+                        anchors.centerIn: parent
                     }
                 }
             }
