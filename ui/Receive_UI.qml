@@ -1,18 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls.Basic
 
-Item {
-    width: parent
-    height:parent
+Rectangle {
+    anchors.centerIn: parent
+    color: "#414141"
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#141414"
-
-        ListView {
-
-        }
-
-
+    Text {
+        anchors.centerIn: parent
+        text: "Waiting for response from another computer..."
     }
 }
