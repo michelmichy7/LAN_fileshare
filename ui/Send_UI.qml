@@ -1,18 +1,42 @@
 import QtQuick 2.15
 import QtQuick.Controls.Basic
 
-Item {
-    width: parent.width
-    height: parent.height
+import "Icons/qml"
 
-    Rectangle {
-        anchors.fill: parent
+Rectangle {
+    color: "#141414"
         anchors.centerIn: parent
-        color: "#141414"
+        Rectangle {
+            width: 460; height: 300;
+            radius: 20
+            anchors.centerIn: parent
+                Grid {
+                    spacing: 20
+                    anchors.centerIn: parent
+                    anchors.fill: parent
+                    Repeater {
+                        model: listModel
+                        delegate: Button {
+                            id: recId
+                            width: 100; height: 100
+                            background: Rectangle {
 
-        ListView {
+                                anchors.margins: 10
+                                radius: 20
+                                anchors.fill: parent
+                                color: "grey"
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: backend.handleDevClick(index)
+                                }
+                            }
 
-        }
-
-        }
+                            ComputerIcon {
+                                anchors.centerIn: parent
+                                z: 3
+                            }
+                        }
+                    }
+                }
+            }
     }
