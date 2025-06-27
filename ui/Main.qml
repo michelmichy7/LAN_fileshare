@@ -49,8 +49,10 @@ Window {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked:
+                        onClicked: {
                             backend.sendPacket()
+                        loader.source = "Send_UI.qml"
+                        }
                     }
                 }
             }
@@ -70,8 +72,10 @@ Window {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: backend.catchPacket()//loader.source = "Receive_UI.qml"
+                        onClicked: { backend.catchPacket()
+                        loader.source = "Receive_UI.qml"
                     }
+                        }
                 }
             }
         }
