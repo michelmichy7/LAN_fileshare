@@ -6,11 +6,6 @@
 Backend::Backend(QObject *parent)
     : QObject{parent}
 {
-    m_model = new ListModel(this);
-    catchPacket();
-    sendPacket();
-
-    connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
 }
 
 void Backend::sendPacket() {
@@ -25,6 +20,7 @@ void Backend::sendPacket() {
 }
 
 void Backend::catchPacket() {
+    m_model = new ListModel(this);
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
         bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
@@ -33,6 +29,12 @@ void Backend::catchPacket() {
             return;
         }
     }
+    connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
+}
+
+void Backend::printIt()
+{
+    qDebug() << "Hello World";
 }
 
 void Backend::onReadyRead()

@@ -33,8 +33,9 @@ public:
     explicit Backend(QObject *parent = nullptr);
 
     ListModel* model() const { return m_model; }
-    void sendPacket();
-    void catchPacket();
+    Q_INVOKABLE void sendPacket();
+    Q_INVOKABLE void catchPacket();
+    Q_INVOKABLE void printIt();
 
 private:
     ListModel *m_model = nullptr;

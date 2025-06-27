@@ -36,7 +36,6 @@ Window {
 
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: loader.source = "Send_UI.qml"
                 background: Rectangle {
                     anchors.centerIn: parent
                     width: 95
@@ -48,13 +47,16 @@ Window {
                         color: "black"
                         anchors.centerIn: parent
                     }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked:
+                            backend.sendPacket()
+                    }
                 }
-
             }
 
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: loader.source = "Receive_UI.qml"
                 background: Rectangle {
                     anchors.centerIn: parent
                     width: 95
@@ -65,6 +67,10 @@ Window {
                         text: "Receive"
                         color: "black"
                         anchors.centerIn: parent
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: backend.catchPacket()//loader.source = "Receive_UI.qml"
                     }
                 }
             }
