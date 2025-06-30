@@ -45,19 +45,24 @@ void Backend::onReadyRead()
         datagram.resize(catcherSocket->pendingDatagramSize());
         quint16 senderPort;
 
-
+        //std::string devName = senderIP.toString();
 
         catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
 
-       // QStringList devList = m_listModel->stringList();
+
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
-            catcherSocket->writeDatagram(QByteArray("DEVICE: "), QHostAddress::Broadcast, 45454);
-            QString devName = senderIP.toString();
-            m_model->addItem(devName);
+            // QStringList devList = m_listModel->stringList();
+            m_model->addItem("s"); //problem with showing in the list, it will add to the list tho
+            qDebug() << "Current model size:" << m_model->rowCount();
+            // Force UI update (if needed)
+            emit m_model->dataChanged(m_model->index(0), m_model->index(m_model->rowCount()-1));
+        } else {
+            qDebug() << "Received unknown packet:" << datagram;
+        }
         }
     }
-}
+
 
 void ListModel::handleDevClick(int index)
 {
@@ -68,6 +73,9 @@ void ListModel::handleDevClick(int index)
 void ListModel::addItem(const QString &item)
 {
     QStringList list = stringList();
-    list.append(item);
+    list.append(item); //problem with showing in the list
     setStringList(list);
+    // Emit signals to notify QML
+    emit dataChanged(index(0), index(rowCount()-1));
+    emit layoutChanged();
 }

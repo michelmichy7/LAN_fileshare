@@ -50,7 +50,7 @@ Window {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            backend.sendPacket()
+                            backend.catchPacket()
                         loader.source = "Send_UI.qml"
                         }
                     }
@@ -72,7 +72,7 @@ Window {
                     }
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: { backend.catchPacket()
+                        onClicked: { backend.sendPacket()
                         loader.source = "Receive_UI.qml"
                     }
                         }
