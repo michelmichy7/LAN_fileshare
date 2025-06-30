@@ -20,26 +20,27 @@ void Backend::sendPacket() {
 }
 
 void Backend::catchPacket() {
-    m_model = new ListModel(this);
+    if (!m_model) {
+       m_model = new ListModel(this);
+    }
+
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
+        connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
         bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
             return;
         }
     }
-    connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
-}
 
-void Backend::printIt()
-{
-    qDebug() << "Hello World";
 }
 
 void Backend::onReadyRead()
 {
     while (catcherSocket->hasPendingDatagrams()) {
+        QHostAddress senderIP;
         QByteArray datagram;
         datagram.resize(catcherSocket->pendingDatagramSize());
         quint16 senderPort;
@@ -51,6 +52,7 @@ void Backend::onReadyRead()
        // QStringList devList = m_listModel->stringList();
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
+            catcherSocket->writeDatagram(QByteArray("DEVICE: "), QHostAddress::Broadcast, 45454);
             QString devName = senderIP.toString();
             m_model->addItem(devName);
         }
