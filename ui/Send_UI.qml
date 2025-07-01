@@ -15,7 +15,7 @@ Rectangle {
                     anchors.centerIn: parent
                     anchors.fill: parent
                     Repeater {
-                        model: listModel
+                        model: backend.model
                         delegate: Button {
                             id: recId
                             width: 100; height: 100

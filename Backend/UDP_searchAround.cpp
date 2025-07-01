@@ -6,6 +6,9 @@
 Backend::Backend(QObject *parent)
     : QObject{parent}
 {
+    if (!m_model) {
+        m_model = new ListModel(this);
+    }
 }
 
 void Backend::sendPacket() {
@@ -20,9 +23,7 @@ void Backend::sendPacket() {
 }
 
 void Backend::catchPacket() {
-    if (!m_model) {
-       m_model = new ListModel(this);
-    }
+
 
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
@@ -52,8 +53,8 @@ void Backend::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
-            // QStringList devList = m_listModel->stringList();
-            m_model->addItem("s"); //problem with showing in the list, it will add to the list tho
+            QString deviceInfo = QString("Device: %1").arg(senderIP.toString());
+            m_model->addItem(deviceInfo);
             qDebug() << "Current model size:" << m_model->rowCount();
             // Force UI update (if needed)
             emit m_model->dataChanged(m_model->index(0), m_model->index(m_model->rowCount()-1));
@@ -66,7 +67,7 @@ void Backend::onReadyRead()
 
 void ListModel::handleDevClick(int index)
 {
-
+    qDebug() << "Device clicked at index:" << index;
 }
 
 
