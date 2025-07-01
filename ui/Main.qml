@@ -26,7 +26,7 @@ Window {
 
         Column {
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 40
+            spacing: 15
 
             Text {
                        text: "How do you want to transfer?"
@@ -34,10 +34,8 @@ Window {
                        anchors.horizontalCenter: parent.horizontalCenter
                    }
 
-            Button {
-                anchors.horizontalCenter: parent.horizontalCenter
-                background: Rectangle {
-                    anchors.centerIn: parent
+                Rectangle {
+                    anchors.horizontalCenter: parent.horizontalCenter
                     width: 95
                     height: 40
                     radius: 15
@@ -55,12 +53,9 @@ Window {
                         }
                     }
                 }
-            }
 
-            Button {
-                anchors.horizontalCenter: parent.horizontalCenter
-                background: Rectangle {
-                    anchors.centerIn: parent
+                Rectangle {
+                    anchors.horizontalCenter: parent.horizontalCenter
                     width: 95
                     height: 40
                     radius: 15
@@ -75,7 +70,6 @@ Window {
                         onClicked: { backend.sendPacket()
                         loader.source = "Receive_UI.qml"
                     }
-                        }
                 }
             }
         }
