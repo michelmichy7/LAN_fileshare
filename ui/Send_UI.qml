@@ -16,27 +16,25 @@ Rectangle {
                     anchors.fill: parent
                     Repeater {
                         model: backend.model
-                        delegate: Button {
-                            id: recId
+                        delegate: Rectangle {
                             width: 100; height: 100
-                            background: Rectangle {
-
-                                anchors.margins: 10
                                 radius: 20
-                                anchors.fill: parent
                                 color: "grey"
+
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: backend.handleDevClick(index)
+                                    onClicked: {
+                                        backend.model.handleDevClick(index) }
+                                }
+                                ComputerIcon {
+                                    anchors.centerIn: parent
+                                    z: 3
                                 }
                             }
 
-                            ComputerIcon {
-                                anchors.centerIn: parent
-                                z: 3
-                            }
+
+
                         }
                     }
                 }
             }
-    }
