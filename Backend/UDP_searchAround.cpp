@@ -8,6 +8,9 @@ Backend::Backend(QObject *parent)
 {
     if (!m_model) {
         m_model = new ListModel(this);
+        m_model->addItem("192.168.0.1");
+         m_model->addItem("192.168.0.12");
+
     }
 }
 
@@ -46,18 +49,26 @@ void Backend::onReadyRead()
         datagram.resize(catcherSocket->pendingDatagramSize());
         quint16 senderPort;
 
-        //std::string devName = senderIP.toString();
-
         catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
-
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
             QString deviceInfo = QString("Device: %1").arg(senderIP.toString());
-            m_model->addItem(deviceInfo);
+            QString rawIP = senderIP.toString();
+
+            if (rawIP.startsWith("::ffff:")) {
+                rawIP = rawIP.mid(7);
+            }
+            m_model->addItem(rawIP);
+
             qDebug() << "Current model size:" << m_model->rowCount();
-            // Force UI update (if needed)
-            emit m_model->dataChanged(m_model->index(0), m_model->index(m_model->rowCount()-1));
+            QStringList allItems = m_model->stringList();
+
+
+            for (const QString &item : std::as_const(allItems)) {
+                qDebug() << item;
+            }
+
         } else {
             qDebug() << "Received unknown packet:" << datagram;
         }
@@ -70,13 +81,10 @@ void ListModel::handleDevClick(int index)
     qDebug() << "Device clicked at index:" << index;
 }
 
-
 void ListModel::addItem(const QString &item)
 {
     QStringList list = stringList();
-    list.append(item); //problem with showing in the list
-    setStringList(list);
-    // Emit signals to notify QML
-    emit dataChanged(index(0), index(rowCount()-1));
-    emit layoutChanged();
+    list.append(item); // ✅ Add the new item
+    setStringList(list); // ✅ Set the updated list
 }
+
