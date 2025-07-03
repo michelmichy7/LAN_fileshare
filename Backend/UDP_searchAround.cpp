@@ -8,8 +8,6 @@ Backend::Backend(QObject *parent)
 {
     if (!m_model) {
         m_model = new ListModel(this);
-        m_model->addItem("192.168.0.1");
-         m_model->addItem("192.168.0.12");
 
     }
 }
