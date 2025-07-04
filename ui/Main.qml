@@ -16,6 +16,14 @@ Window {
         z: 3
     }
 
+    Connections {
+        target: backend
+        function onShowConnection() {
+            loader.source = connectionRequest
+            Console.log("Connection emit received on qml")
+        }
+    }
+
     Rectangle {
         width: 100
         height: 100

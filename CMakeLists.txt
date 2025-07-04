@@ -24,6 +24,7 @@ qt_add_qml_module(appLAN_fileshare
         SOURCES Backend/Backend.h Backend/UDP_searchAround.cpp Backend/TCP_Sharing.cpp
         QML_FILES ui/Send_UI.qml ui/Receive_UI.qml
         QML_FILES ui/Icons/qml/ComputerIcon.qml
+        QML_FILES ui/connectionRequest.qml
 )
 
 qt_add_resources(appLAN_fileshare "resources"

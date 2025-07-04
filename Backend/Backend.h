@@ -10,6 +10,8 @@
 #include <QHostAddress>
 #include <QStringListModel>
 
+
+
 class ListModel : public QStringListModel
 {
     Q_OBJECT
@@ -22,12 +24,17 @@ public:
 
     Q_INVOKABLE void handleDevClick(int index);
     Q_INVOKABLE void addItem(const QString &item);
+
+signals:
+    void doConnectionBox(const QString &ip);
+
 };
 
 class Backend : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ListModel* model READ model CONSTANT)
+
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -36,6 +43,8 @@ public:
     Q_INVOKABLE void sendPacket();
     Q_INVOKABLE void catchPacket();
 
+signals:
+    void showConnectionPage();
 private:
     ListModel *m_model = nullptr;
     QUdpSocket *senderSocket = nullptr;
@@ -43,6 +52,7 @@ private:
 
 private slots:
     void onReadyRead();
+    void onDoConnectionBox(const QString &ip);
 };
 
 #endif // BACKEND_H

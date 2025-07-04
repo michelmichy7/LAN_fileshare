@@ -9,11 +9,8 @@ Backend::Backend(QObject *parent)
 {
     if (!m_model) {
         m_model = new ListModel(this);
-<<<<<<< HEAD
-
-=======
         m_model->addItem("192.168.0.1");
->>>>>>> 434ac67 (Major fixes)
+        connect(m_model, &ListModel::doConnectionBox, this, &Backend::onDoConnectionBox);
     }
 }
 
@@ -23,11 +20,8 @@ void Backend::sendPacket() {
 
 
         senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        while (senderSocket->state() != QAbstractSocket::ConnectedState) {
-            senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
-            qDebug() << "Sended packet to find Sender";
-            QThread::msleep(5000);
-        }
+        senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
+        qDebug() << "Sended packet to find Sender";
     }
 }
 
@@ -72,22 +66,36 @@ void Backend::onReadyRead()
                 qDebug() << item;
             }
 
-        } else {
-            qDebug() << "Received unknown packet:" << datagram;
+        } else if (datagram == "CONNECT_REQUEST"){
+            qDebug() << "Received connection request:" << senderIP;
+            emit showConnectionPage();
         }
         }
     }
 
+void Backend::onDoConnectionBox(const QString &ip)
+{
+    if (!senderSocket) {
+        senderSocket = new QUdpSocket(this);
+    }
+    QByteArray data("CONNECT_REQUEST");
+    senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
+}
+
 
 void ListModel::handleDevClick(int index)
 {
-    qDebug() << "Device clicked at index:" << index;
+    QStringList list = stringList();
+    QString ipAddr = list.at(index);
+
+    qDebug() << "Gonna make an action with: " << ipAddr;
+    emit doConnectionBox(ipAddr);
 }
 
 void ListModel::addItem(const QString &item)
 {
     QStringList list = stringList();
-    list.append(item); // ✅ Add the new item
-    setStringList(list); // ✅ Set the updated list
+    list.append(item);
+    setStringList(list);
 }
 
