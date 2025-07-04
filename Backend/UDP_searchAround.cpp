@@ -18,7 +18,7 @@ void Backend::sendPacket() {
         senderSocket = new QUdpSocket(this);
 
 
-        senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
         qDebug() << "Sended packet to find Sender";
     }
@@ -28,7 +28,7 @@ void Backend::catchPacket() {
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
         connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
-        bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
@@ -78,7 +78,7 @@ void Backend::onDoConnectionBox(const QString &ip)
         senderSocket = new QUdpSocket(this);
 
         // Bind to any free port for sending only, before writing
-        bool success = senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
         if (!success) {
             qDebug() << "Bind Failed: " << senderSocket->errorString(); // << NOTE: wrong socket checked before
