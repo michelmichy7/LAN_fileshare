@@ -9,7 +9,6 @@ Backend::Backend(QObject *parent)
 {
     if (!m_model) {
         m_model = new ListModel(this);
-        m_model->addItem("192.168.0.1");
         connect(m_model, &ListModel::doConnectionBox, this, &Backend::onDoConnectionBox);
     }
 }
@@ -77,10 +76,20 @@ void Backend::onDoConnectionBox(const QString &ip)
 {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
+
+        // Bind to any free port for sending only, before writing
+        bool success = senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+
+        if (!success) {
+            qDebug() << "Bind Failed: " << senderSocket->errorString(); // << NOTE: wrong socket checked before
+            return;
+        }
     }
+
     QByteArray data("CONNECT_REQUEST");
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
+
 
 
 void ListModel::handleDevClick(int index)
