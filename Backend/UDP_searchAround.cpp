@@ -2,30 +2,36 @@
 #include "QDebug"
 #include <QCoreApplication>
 #include <QUdpSocket>
+#include <QThread>
 
 Backend::Backend(QObject *parent)
     : QObject{parent}
 {
     if (!m_model) {
         m_model = new ListModel(this);
+<<<<<<< HEAD
 
+=======
+        m_model->addItem("192.168.0.1");
+>>>>>>> 434ac67 (Major fixes)
     }
 }
 
 void Backend::sendPacket() {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
-        qDebug() << "Sended packet for finding a device";
+
 
         senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
-
+        while (senderSocket->state() != QAbstractSocket::ConnectedState) {
+            senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
+            qDebug() << "Sended packet to find Sender";
+            QThread::msleep(5000);
+        }
     }
 }
 
 void Backend::catchPacket() {
-
-
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
         connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
@@ -51,7 +57,6 @@ void Backend::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
-            QString deviceInfo = QString("Device: %1").arg(senderIP.toString());
             QString rawIP = senderIP.toString();
 
             if (rawIP.startsWith("::ffff:")) {
