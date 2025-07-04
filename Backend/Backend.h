@@ -51,7 +51,8 @@ private:
     QUdpSocket *catcherSocket = nullptr;
 
 private slots:
-    void onReadyRead();
+    void onCReadyRead();
+    void onSReadyRead();
     void onDoConnectionBox(const QString &ip);
 };
 
