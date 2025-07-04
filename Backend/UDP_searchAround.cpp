@@ -19,7 +19,7 @@ void Backend::sendPacket() {
         senderSocket = new QUdpSocket(this);
 
 
-        senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
         qDebug() << "Sended packet to find Sender";
     }
