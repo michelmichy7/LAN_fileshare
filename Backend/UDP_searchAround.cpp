@@ -40,6 +40,8 @@ void Backend::catchPacket() {
 
 void Backend::onReadyRead()
 {
+    qDebug() << "Socket state:" << catcherSocket->state();
+    qDebug() << "Socket bound to:" << catcherSocket->localPort();
     while (catcherSocket->hasPendingDatagrams()) {
         QHostAddress senderIP;
         QByteArray datagram;
@@ -81,7 +83,7 @@ void Backend::onDoConnectionBox(const QString &ip)
         bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
         if (!success) {
-            qDebug() << "Bind Failed: " << senderSocket->errorString(); // << NOTE: wrong socket checked before
+            qDebug() << "Bind Failed: " << senderSocket->errorString();
             return;
         }
     }
