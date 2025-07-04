@@ -40,9 +40,10 @@ void Backend::catchPacket() {
 
 void Backend::onCReadyRead()
 {
-    qDebug() << "Socket state:" << catcherSocket->state();
-    qDebug() << "Socket bound to:" << catcherSocket->localPort();
+
     while (catcherSocket->hasPendingDatagrams()) {
+        qDebug() << "Socket state:" << catcherSocket->state();
+        qDebug() << "Socket bound to:" << catcherSocket->localPort();
         QHostAddress senderIP;
         QByteArray datagram;
         datagram.resize(catcherSocket->pendingDatagramSize());
@@ -76,9 +77,10 @@ void Backend::onCReadyRead()
 
 void Backend::onSReadyRead()
 {
-    qDebug() << "Socket state:" << catcherSocket->state();
-    qDebug() << "Socket bound to:" << catcherSocket->localPort();
+
     while (senderSocket->hasPendingDatagrams()) {
+        qDebug() << "Socket state:" << catcherSocket->state();
+        qDebug() << "Socket bound to:" << catcherSocket->localPort();
         QHostAddress senderIP;
         QByteArray datagram;
         datagram.resize(senderSocket->pendingDatagramSize());
