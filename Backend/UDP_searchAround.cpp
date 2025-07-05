@@ -27,7 +27,7 @@ void Backend::catchPacket() {
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
         connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
-        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();

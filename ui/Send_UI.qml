@@ -29,7 +29,7 @@ Rectangle {
                         onClicked: {
                             backend.model.handleDevClick(index)
                             console.log("Clicked IP:", model.display)
-                            //backend.catchPacket()
+                            backend.catchPacket()
                         }
                     }
 
