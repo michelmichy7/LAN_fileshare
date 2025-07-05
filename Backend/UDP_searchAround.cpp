@@ -26,9 +26,9 @@ void Backend::sendPacket() {
 void Backend::catchPacket() {
     if (!catcherSocket) {
         catcherSocket = new QUdpSocket(this);
-        connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
-        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
+        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
             return;
@@ -41,15 +41,15 @@ void Backend::catchPacket() {
 void Backend::onReadyRead()
 {
 
-    while (senderSocket->hasPendingDatagrams()) {
+    while (catcherSocket->hasPendingDatagrams()) {
         qDebug() << "Socket state:" << catcherSocket->state();
         qDebug() << "Socket bound to:" << catcherSocket->localPort();
         QHostAddress senderIP;
         QByteArray datagram;
-        datagram.resize(senderSocket->pendingDatagramSize());
+        datagram.resize(catcherSocket->pendingDatagramSize());
         quint16 senderPort;
 
-        senderSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
+        catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
