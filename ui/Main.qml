@@ -76,6 +76,7 @@ Window {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: { backend.sendPacket()
+                            backend.catchPacket()
                         loader.source = "Receive_UI.qml"
                     }
                 }
