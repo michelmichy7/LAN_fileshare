@@ -17,7 +17,7 @@ Window {
         function onShowConnectionPage(message) {
             senderRequest = message
             loader.source = "ConnectionRequest.qml"
-            Console.log("Connection emit received on qml: ", message)
+            console.log("Connection emit received on qml: ", message)
         }
     }
 
