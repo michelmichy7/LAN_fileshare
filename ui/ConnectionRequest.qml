@@ -5,14 +5,17 @@ Rectangle {
     color: "black"
     opacity: 0.75
 
+    property string senderRequest: ""
+
     Rectangle {
         anchors.centerIn: parent
-        height: 130; width: 300
+        height: 130
+        width: 300
         color: "#141414"
         radius: 15
 
         Text {
-            text: "IP: wants to share files with you, do you agree?"
+            text: senderRequest + " wants to share files with you, do you agree?"
             color: "white"
             anchors.top: parent.top
             anchors.left: parent.left
@@ -32,7 +35,8 @@ Rectangle {
 
             Rectangle {
                 radius: 15
-                width: 120; height: 35
+                width: 120
+                height: 35
                 color: "white"
                 Text {
                     text: "Yes"
@@ -40,9 +44,11 @@ Rectangle {
                     anchors.centerIn: parent
                 }
             }
+
             Rectangle {
                 radius: 15
-                width: 120; height: 35
+                width: 120
+                height: 35
                 color: "white"
                 Text {
                     text: "No"

@@ -42,9 +42,10 @@ public:
 
     Q_INVOKABLE void sendPacket();
     Q_INVOKABLE void catchPacket();
+    QString message;
 
 signals:
-    void showConnectionPage();
+    void showConnectionPage(const QString &message);
 private:
     ListModel *m_model = nullptr;
     QUdpSocket *senderSocket = nullptr;
@@ -52,7 +53,6 @@ private:
 
 private slots:
     void onReadyRead();
-    //void onSReadyRead();
     void onDoConnectionBox(const QString &ip);
 };
 

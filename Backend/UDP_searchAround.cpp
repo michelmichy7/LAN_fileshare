@@ -48,18 +48,21 @@ void Backend::catchPacket() {
 
 void Backend::onReadyRead()
 {
+    QHostAddress senderIP;
+    QByteArray datagram;
+    datagram.resize(catcherSocket->pendingDatagramSize());
+    quint16 senderPort;
+
+    catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
+
+    QString rawIP = senderIP.toString();
 
     while (catcherSocket->hasPendingDatagrams()) {
-        QHostAddress senderIP;
-        QByteArray datagram;
-        datagram.resize(catcherSocket->pendingDatagramSize());
-        quint16 senderPort;
 
-        catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
 
-            QString rawIP = senderIP.toString();
+
             if (rawIP.startsWith("::ffff:")) {
                 rawIP = rawIP.mid(7);
             }
@@ -75,7 +78,7 @@ void Backend::onReadyRead()
 
         } else if (datagram == "CONNECT_REQUEST"){
             qDebug() << "Received connection request:" << senderIP;
-            emit showConnectionPage();
+            emit showConnectionPage(rawIP);
         }
     }
 }
