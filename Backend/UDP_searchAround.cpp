@@ -14,55 +14,60 @@ Backend::Backend(QObject *parent)
 }
 
 void Backend::sendPacket() {
+
     if (!senderSocket) {
+
         senderSocket = new QUdpSocket(this);
 
-        senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+
         senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
+
         qDebug() << "Sended packet to find Sender";
+
     }
+
 }
 
 void Backend::catchPacket() {
+
     if (!catcherSocket) {
+
         catcherSocket = new QUdpSocket(this);
 
-        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
+
+        bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
             return;
         }
     }
-
 }
-
 
 void Backend::onReadyRead()
 {
 
     while (catcherSocket->hasPendingDatagrams()) {
-        qDebug() << "Socket state:" << catcherSocket->state();
-        qDebug() << "Socket bound to:" << catcherSocket->localPort();
         QHostAddress senderIP;
         QByteArray datagram;
         datagram.resize(catcherSocket->pendingDatagramSize());
         quint16 senderPort;
 
         catcherSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
-
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device";
-            QString rawIP = senderIP.toString();
 
+            QString rawIP = senderIP.toString();
             if (rawIP.startsWith("::ffff:")) {
                 rawIP = rawIP.mid(7);
             }
+
             m_model->addItem(rawIP);
-
             qDebug() << "Current model size:" << m_model->rowCount();
-            QStringList allItems = m_model->stringList();
 
+            QStringList allItems = m_model->stringList();
 
             for (const QString &item : std::as_const(allItems)) {
                 qDebug() << item;
@@ -82,7 +87,7 @@ void Backend::onDoConnectionBox(const QString &ip)
 
         // Bind to any free port for sending only, before writing
         bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-
+        qDebug() << "onConnection";
         if (!success) {
             qDebug() << "Bind Failed: " << senderSocket->errorString();
             return;
@@ -92,8 +97,6 @@ void Backend::onDoConnectionBox(const QString &ip)
     QByteArray data("CONNECT_REQUEST");
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
-
-
 
 void ListModel::handleDevClick(int index)
 {
@@ -110,4 +113,3 @@ void ListModel::addItem(const QString &item)
     list.append(item);
     setStringList(list);
 }
-

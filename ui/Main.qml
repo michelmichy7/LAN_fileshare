@@ -18,8 +18,8 @@ Window {
 
     Connections {
         target: backend
-        function onShowConnection() {
-            loader.source = connectionRequest
+        function onShowConnectionPage() {
+            loader.source = "ConnectionRequest.qml"
             Console.log("Connection emit received on qml")
         }
     }
