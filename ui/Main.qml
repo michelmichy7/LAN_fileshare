@@ -29,6 +29,9 @@ Window {
             if (loader.item && loader.item.hasOwnProperty("senderRequest")) {
                 loader.item.senderRequest = senderRequest
             }
+            item.requestDiscard.connect(function() {
+            loader.active = false
+        })
         }
     }
 
