@@ -25,6 +25,7 @@ qt_add_qml_module(appLAN_fileshare
         QML_FILES ui/Send_UI.qml ui/Receive_UI.qml
         QML_FILES ui/Icons/qml/ComputerIcon.qml
         QML_FILES ui/ConnectionRequest.qml
+        QML_FILES ui/FileShare.qml
 )
 
 qt_add_resources(appLAN_fileshare "resources"

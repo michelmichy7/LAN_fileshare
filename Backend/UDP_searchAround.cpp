@@ -16,13 +16,10 @@ Backend::Backend(QObject *parent)
 void Backend::sendPacket() {
 
     if (!senderSocket) {
-
         senderSocket = new QUdpSocket(this);
 
         senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-
         senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
-
         qDebug() << "Sended packet to find Sender";
 
     }
@@ -30,15 +27,12 @@ void Backend::sendPacket() {
 }
 
 void Backend::catchPacket() {
-
     if (!catcherSocket) {
 
         catcherSocket = new QUdpSocket(this);
-
         connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
 
         bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-
         if (!success) {
             qDebug() << "Bind Failed: " << catcherSocket->errorString();
             return;

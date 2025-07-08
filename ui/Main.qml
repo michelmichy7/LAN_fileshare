@@ -16,8 +16,27 @@ Window {
         target: backend
         function onShowConnectionPage(message) {
             senderRequest = message
-            loader.source = "ConnectionRequest.qml"
+            overlay.source = "ConnectionRequest.qml"
             console.log("Connection emit received on qml: ", message)
+        }
+    }
+
+    Loader {
+        id: overlay
+        anchors.fill: parent
+        z: 4
+        onLoaded: {
+            if (overlay.item && overlay.item.hasOwnProperty("senderRequest")) {
+                overlay.item.senderRequest = senderRequest
+            }
+
+            item.requestDiscard.connect(function() {
+                overlay.source = ""
+            })
+
+            item.requestAccept.connect(function() {
+                overlay.source = "FileShare.qml"
+            })
         }
     }
 
@@ -30,8 +49,11 @@ Window {
                 loader.item.senderRequest = senderRequest
             }
             item.requestDiscard.connect(function() {
-            loader.source = "Receive_UI.qml"
+                overlay.source = ""
         })
+            item.requestAccept.connect(function() {
+                overlay.source = "FileShare.qml"
+            })
         }
     }
 

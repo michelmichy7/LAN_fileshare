@@ -43,10 +43,16 @@ Rectangle {
                 width: 120
                 height: 35
                 color: "white"
+
                 Text {
                     text: "Yes"
                     color: "black"
                     anchors.centerIn: parent
+                }
+                MouseArea {
+                    onClicked: {
+                        reqOverlay.requestAccept()
+                    }
                 }
             }
 
