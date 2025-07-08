@@ -30,7 +30,7 @@ Window {
                 loader.item.senderRequest = senderRequest
             }
             item.requestDiscard.connect(function() {
-            loader.active = false
+            loader.source = "Receive_UI.qml"
         })
         }
     }

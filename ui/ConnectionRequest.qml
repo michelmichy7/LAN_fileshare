@@ -63,7 +63,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                    reqOverlay.requestDiscard()
+                        reqOverlay.requestDiscard()
                     }
                 }
             }
