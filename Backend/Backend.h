@@ -4,12 +4,13 @@
 
 #include <QObject>
 #include <QUdpSocket>
+#include <QTcpSocket>
+#include <QTcpServer>
 #include <QDebug>
 #include <QList>
 #include <QPair>
 #include <QHostAddress>
 #include <QStringListModel>
-
 
 
 class ListModel : public QStringListModel
@@ -42,14 +43,24 @@ public:
 
     Q_INVOKABLE void sendPacket();
     Q_INVOKABLE void catchPacket();
+
+    Q_INVOKABLE void tcpConnection_REC(const QString &ip);
+    Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
     QString message;
 
 signals:
     void showConnectionPage(const QString &message);
+
+    void tcpConnected(const QString &ip);
 private:
     ListModel *m_model = nullptr;
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
+
+    QTcpSocket *tcpSocket = nullptr;
+    QTcpServer *tcpServer = nullptr;
+
+
 
 private slots:
     void onReadyRead();

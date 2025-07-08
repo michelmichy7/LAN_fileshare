@@ -9,6 +9,7 @@ Rectangle {
     property string senderRequest: ""
     signal requestDiscard()
     signal requestAccept()
+    signal doConnection()
 
     Rectangle {
         anchors.centerIn: parent
@@ -50,8 +51,10 @@ Rectangle {
                     anchors.centerIn: parent
                 }
                 MouseArea {
+                    anchors.fill: parent
                     onClicked: {
                         reqOverlay.requestAccept()
+                        reqOverlay.doConnection()
                     }
                 }
             }

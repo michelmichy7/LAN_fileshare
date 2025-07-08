@@ -10,6 +10,13 @@ Window {
     title: qsTr("Nearby File Sender")
     color: "#141414"
 
+    Component {
+        id: connectionState
+        Rectangle {
+
+        }
+    }
+
     property string senderRequest: ""
 
     Connections {
@@ -17,7 +24,10 @@ Window {
         function onShowConnectionPage(message) {
             senderRequest = message
             overlay.source = "ConnectionRequest.qml"
-            console.log("Connection emit received on qml: ", message)
+        }
+
+        function onTcpConnected(ip) {
+            loader.source = "FileShare.qml"
         }
     }
 
@@ -35,7 +45,10 @@ Window {
             })
 
             item.requestAccept.connect(function() {
-                overlay.source = "FileShare.qml"
+
+            })
+            item.doConnection.connect(function() {
+                backend.tcpConnection_REC(senderRequest)
             })
         }
     }
@@ -49,7 +62,7 @@ Window {
                 loader.item.senderRequest = senderRequest
             }
             item.requestDiscard.connect(function() {
-                overlay.source = ""
+                overlay.sourceComponent = "connectionState"
         })
             item.requestAccept.connect(function() {
                 overlay.source = "FileShare.qml"
