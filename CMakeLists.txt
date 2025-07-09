@@ -4,9 +4,10 @@ project(LAN_fileshare VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
-find_package(Qt6 REQUIRED COMPONENTS Network)
+find_package(Qt6 REQUIRED COMPONENTS Quick Network Widgets Core Gui Qml)
+
 #target_link_libaries(appLAN_fileshare PRIVATE Qt6::Network)
+
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -26,6 +27,7 @@ qt_add_qml_module(appLAN_fileshare
         QML_FILES ui/Icons/qml/ComputerIcon.qml
         QML_FILES ui/ConnectionRequest.qml
         QML_FILES ui/FileShare.qml
+        SOURCES Backend/FileDialogHelper.cpp
 )
 
 qt_add_resources(appLAN_fileshare "resources"
@@ -46,7 +48,7 @@ set_target_properties(appLAN_fileshare PROPERTIES
 )
 
 target_link_libraries(appLAN_fileshare
-    PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Network
 )
 
 include(GNUInstallDirs)

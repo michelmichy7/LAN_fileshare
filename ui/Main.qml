@@ -45,7 +45,7 @@ Window {
             })
 
             item.requestAccept.connect(function() {
-
+                overlay.source = ""
             })
             item.doConnection.connect(function() {
                 backend.tcpConnection_REC(senderRequest)

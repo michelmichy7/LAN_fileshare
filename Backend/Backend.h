@@ -67,4 +67,13 @@ private slots:
     void onDoConnectionBox(const QString &ip);
 };
 
+class FileDialogHelper : public QObject
+{
+    Q_OBJECT
+public:
+    explicit FileDialogHelper(QObject *parent = nullptr);
+
+    Q_INVOKABLE QStringList openFileDialog();
+};
+
 #endif // BACKEND_H
