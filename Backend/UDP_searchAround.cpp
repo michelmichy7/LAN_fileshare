@@ -102,6 +102,21 @@ void Backend::onDoConnectionBox(const QString &ip)
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 
+void Backend::statusPacket(const QString &ip)
+{
+    if (!senderSocket) {
+        senderSocket = new QUdpSocket(this);
+    }
+    bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+    qDebug() << "onConnection";
+    if (!success) {
+        qDebug() << "Bind Failed: " << senderSocket->errorString();
+        return;
+    }
+    QByteArray data = "ACCEPT_" + ip.toUtf8();
+    senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
+}
+
 void ListModel::handleDevClick(int index)
 {
     QStringList list = stringList();
@@ -117,3 +132,5 @@ void ListModel::addItem(const QString &item)
     list.append(item);
     setStringList(list);
 }
+
+
