@@ -46,7 +46,7 @@ public:
 
     Q_INVOKABLE void tcpConnection_REC(const QString &ip);
     Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
-    void statusPacket(const QString &ip);
+    Q_INVOKABLE void statusPacket(const QString &ip);
     QString message;
 
 signals:
