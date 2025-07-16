@@ -91,7 +91,7 @@ Rectangle {
                 id: mouseArea
                 anchors.fill: parent
                 onClicked: {
-                    let files = fileDialogHelper.openFileDialog()
+                    let files = FileDialogHelper.openFileDialog()
                     filePaths = files
                 }
             }
