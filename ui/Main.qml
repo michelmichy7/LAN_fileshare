@@ -50,6 +50,7 @@ Window {
             })
             item.doConnection.connect(function() {
                 backend.tcpConnection_REC(senderRequest)
+                backend.statusPacket(senderRequest)
             })
         }
     }
@@ -67,7 +68,7 @@ Window {
         })
             item.requestAccept.connect(function() {
                 overlay.source = "FileShare.qml"
-                backend.statusPacket(senderRequest)
+
             })
         }
     }
