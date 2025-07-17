@@ -88,11 +88,33 @@ Rectangle {
             }
 
             MouseArea {
-                id: mouseArea
+                id: selectArea
                 anchors.fill: parent
                 onClicked: {
                     let files = FileDialogHelper.openFileDialog()
                     filePaths = files
+                }
+            }
+        }
+        Rectangle {
+            width: 120
+            height: 35
+            radius: 15
+            color: mouseArea.pressed ? "#e0e0e0" : "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Text {
+                text: "Send Files"
+                color: "black"
+                anchors.centerIn: parent
+                font.pixelSize: 12
+            }
+
+            MouseArea {
+                id: sendArea
+                anchors.fill: parent
+                onClicked: {
+
                 }
             }
         }

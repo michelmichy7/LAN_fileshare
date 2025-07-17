@@ -30,4 +30,7 @@ void Backend::tcpConnection_SEN(const QString &ip) {
     }
 }
 
+void Backend::sendFiles() {
+
+}
 
