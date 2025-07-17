@@ -48,6 +48,7 @@ public:
     Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
     Q_INVOKABLE
     QString message;
+    Q_INVOKABLE void transferFilesTCP();
 
 signals:
     void showConnectionPage(const QString &message);
@@ -62,7 +63,7 @@ private:
     QTcpServer *tcpServer = nullptr;
     void sendStatusPacket(const QString &ip);
 
-    Q_INVOKABLE void transferFilesTCP();
+
 
 
 
