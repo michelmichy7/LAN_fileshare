@@ -102,7 +102,7 @@ void Backend::onDoConnectionBox(const QString &ip)
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 
-void Backend::statusPacket(const QString &ip)
+void Backend::sendStatusPacket(const QString &ip)
 {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
@@ -113,7 +113,7 @@ void Backend::statusPacket(const QString &ip)
         qDebug() << "Bind Failed: " << senderSocket->errorString();
         return;
     }
-    QByteArray data = "ACCEPT_" + ip.toUtf8();
+    QByteArray data = "TCP_CONNECTED";
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 

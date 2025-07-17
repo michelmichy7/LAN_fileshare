@@ -46,12 +46,13 @@ public:
 
     Q_INVOKABLE void tcpConnection_REC(const QString &ip);
     Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
-    Q_INVOKABLE void statusPacket(const QString &ip);
+    Q_INVOKABLE
     QString message;
 
 signals:
     void showConnectionPage(const QString &message);
     void tcpConnected(const QString &ip);
+
 private:
     ListModel *m_model = nullptr;
     QUdpSocket *senderSocket = nullptr;
@@ -59,6 +60,7 @@ private:
 
     QTcpSocket *tcpSocket = nullptr;
     QTcpServer *tcpServer = nullptr;
+    void sendStatusPacket(const QString &ip);
 
 
 

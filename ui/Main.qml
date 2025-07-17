@@ -18,6 +18,7 @@ Window {
     }
 
     property string senderRequest: ""
+    property int user //0 sender //1 receiver
 
     Connections {
         target: backend
@@ -46,7 +47,6 @@ Window {
 
             item.requestAccept.connect(function() {
                 overlay.source = ""
-                backend.statusPacket(senderRequest)
 
             })
             item.doConnection.connect(function() {
@@ -105,6 +105,7 @@ Window {
                     onClicked: {
                         backend.catchPacket()
                         loader.source = "Send_UI.qml"
+                        user = 0
                     }
                 }
             }
@@ -126,6 +127,7 @@ Window {
                         backend.sendPacket()
                         backend.catchPacket()
                         loader.source = "Receive_UI.qml"
+                        user = 1
                     }
                 }
             }
