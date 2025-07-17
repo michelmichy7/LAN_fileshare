@@ -80,6 +80,9 @@ void Backend::onReadyRead()
         } else if (datagram == "CONNECT_REQUEST") {
             qDebug() << "Received connection request from:" << rawIP;
             emit showConnectionPage(rawIP);
+        } else if (datagram == "TCP_CONNECTED") {
+            qDebug() << "Connected: " << rawIP;
+            emit tcpConnected(rawIP);
         }
     }
 }
