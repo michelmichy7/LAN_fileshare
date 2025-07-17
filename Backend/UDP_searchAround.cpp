@@ -106,14 +106,15 @@ void Backend::sendStatusPacket(const QString &ip)
 {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
+        connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
+        bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        qDebug() << "onConnection";
+        if (!success) {
+            qDebug() << "Bind Failed: " << senderSocket->errorString();
+            return;
+        }
     }
-    connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
-    bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    qDebug() << "onConnection";
-    if (!success) {
-        qDebug() << "Bind Failed: " << senderSocket->errorString();
-        return;
-    }
+
     QByteArray data = "TCP_CONNECTED";
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
