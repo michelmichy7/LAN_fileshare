@@ -62,6 +62,8 @@ private:
     QTcpServer *tcpServer = nullptr;
     void sendStatusPacket(const QString &ip);
 
+    Q_INVOKABLE void sendFiles();
+
 
 
 private slots:
