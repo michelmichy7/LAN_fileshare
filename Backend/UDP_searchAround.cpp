@@ -107,6 +107,7 @@ void Backend::sendStatusPacket(const QString &ip)
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
     }
+    connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
     bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
     qDebug() << "onConnection";
     if (!success) {
