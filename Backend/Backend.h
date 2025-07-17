@@ -62,7 +62,7 @@ private:
     QTcpServer *tcpServer = nullptr;
     void sendStatusPacket(const QString &ip);
 
-    Q_INVOKABLE void sendFiles();
+    Q_INVOKABLE void transferFilesTCP();
 
 
 

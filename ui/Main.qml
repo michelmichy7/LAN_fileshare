@@ -68,7 +68,6 @@ Window {
         })
             item.requestAccept.connect(function() {
                 overlay.source = "FileShare.qml"
-
             })
         }
     }
