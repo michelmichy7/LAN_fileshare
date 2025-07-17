@@ -46,12 +46,12 @@ Window {
 
             item.requestAccept.connect(function() {
                 overlay.source = ""
+                backend.statusPacket(senderRequest)
 
             })
             item.doConnection.connect(function() {
                 backend.tcpConnection_REC(senderRequest)
-                backend.statusPacket(senderRequest)
-            })
+                })
         }
     }
 
