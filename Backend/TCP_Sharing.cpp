@@ -7,14 +7,12 @@ void Backend::tcpConnection_REC(const QString &ip) {
 
         tcpSocket->connectToHost(ip, 45454);
 
-        if (tcpSocket->ConnectedState) {
+         connect(tcpSocket, &QTcpSocket::connected, this, [this, ip]()  {
             qDebug() << "Connected TCP socket: " << ip;
             emit tcpConnected(ip);
             sendStatusPacket(ip);
-        }
+        });
     }
-
-
 }
 
 void Backend::tcpConnection_SEN(const QString &ip) {
