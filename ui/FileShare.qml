@@ -114,7 +114,7 @@ Rectangle {
                 id: sendArea
                 anchors.fill: parent
                 onClicked: {
-
+                    backend.transferFilesTCP();
                 }
             }
         }
