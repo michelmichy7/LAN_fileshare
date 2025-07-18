@@ -59,12 +59,8 @@ private:
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
 
-    QTcpSocket *tcpSocket = nullptr;
-    QTcpServer *tcpServer = nullptr;
+
     void sendStatusPacket(const QString &ip);
-
-
-
 
 
 private slots:

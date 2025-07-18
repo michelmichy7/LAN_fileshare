@@ -1,4 +1,5 @@
 #include "Backend.h"
+#include "udpside.h"
 #include "QDebug"
 #include <QCoreApplication>
 #include <QUdpSocket>
@@ -13,8 +14,8 @@ Backend::Backend(QObject *parent)
     }
 }
 
-void Backend::sendPacket() {
-
+void UDPSender::sendPacket() {
+//change this
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
 
@@ -26,11 +27,11 @@ void Backend::sendPacket() {
 
 }
 
-void Backend::catchPacket() {
+void UDPReceiver::catchPacket() {
     if (!catcherSocket) {
 
         catcherSocket = new QUdpSocket(this);
-        connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
+        connect(catcherSocket, &QUdpSocket::readyRead, this, &UDPReceiver::onReadyRead);
 
         bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         if (!success) {
@@ -40,7 +41,7 @@ void Backend::catchPacket() {
     }
 }
 
-void Backend::onReadyRead()
+void UDPReceiver::onReadyRead()
 {
     while (catcherSocket->hasPendingDatagrams()) {
         QHostAddress senderIP;
@@ -87,7 +88,7 @@ void Backend::onReadyRead()
     }
 }
 
-void Backend::onDoConnectionBox(const QString &ip)
+void UDPSender::onDoConnectionBox(const QString &ip)
 {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
@@ -105,11 +106,11 @@ void Backend::onDoConnectionBox(const QString &ip)
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 
-void Backend::sendStatusPacket(const QString &ip)
+void UDPSender::sendStatusPacket(const QString &ip)
 {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
-        connect(catcherSocket, &QUdpSocket::readyRead, this, &Backend::onReadyRead);
+        connect(senderSocket, &QUdpSocket::readyRead, this, &UDPSender::onReadyRead);
         bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
         qDebug() << "onConnection";
         if (!success) {
