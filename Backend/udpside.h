@@ -1,6 +1,7 @@
 #ifndef UDPSIDE_H
 #define UDPSIDE_H
 
+#include "Backend/Backend.h"
 #include <QObject>
 #include <QUdpSocket>
 #include <QDebug>
@@ -40,6 +41,7 @@ private slots:
     void onReadyRead();
 
 private:
+    Backend backend;
     QUdpSocket *catcherSocket = nullptr;
 };
 
