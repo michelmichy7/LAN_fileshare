@@ -11,6 +11,28 @@ UDPSender::UDPSender(QObject *parent)
     }
 }
 
+void UDPSender::catchPacket()
+{
+    if (!senderSocket) {
+
+        senderSocket = new QUdpSocket(this);
+        connect(senderSocket, &QUdpSocket::readyRead, this, &UDPSender::onReadyRead);
+
+        bool success = senderSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        if (!success) {
+            qDebug() << "Bind Failed: " << senderSocket->errorString();
+            return;
+        }
+    }
+}
+
+void UDPSender::sendStatusPacket(const QString& ip)
+{
+    QByteArray data = "TCP_CONNECTED";
+    senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
+    qDebug() << "UDP status packet sent to" << ip;
+}
+
 void UDPSender::onDoConnectionBox(const QString &ip)
 {
     if (!senderSocket) {

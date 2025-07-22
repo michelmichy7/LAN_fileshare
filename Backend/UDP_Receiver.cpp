@@ -27,7 +27,10 @@ void UDPReceiver::catchPacket() {
 
 void UDPReceiver::sendPacket()
 {
-
+    //change this
+    catcherSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+    catcherSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
+    qDebug() << "Sended packet to find Sender";
 }
 
 void UDPReceiver::onReadyRead()
@@ -79,15 +82,23 @@ void UDPReceiver::onReadyRead()
 
 void UDPReceiver::onDoConnectionBox(const QString &ip)
 {
+    if (!catcherSocket) {
+        catcherSocket = new QUdpSocket(this);
 
+        // Bind to any free port for sending only, before writing
+        bool success = catcherSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+        qDebug() << "onConnection";
+        if (!success) {
+            qDebug() << "Bind Failed: " << catcherSocket->errorString();
+            return;
+        }
+    }
+
+    QByteArray data("CONNECT_REQUEST");
+    catcherSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 
-void UDPSender::sendStatusPacket(const QString& ip)
-{
-    QByteArray data = "TCP_CONNECTED";
-    senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
-    qDebug() << "UDP status packet sent to" << ip;
-}
+
 
 void ListModel::handleDevClick(int index)
 {

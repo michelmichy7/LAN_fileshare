@@ -12,6 +12,7 @@ class UDPSender : public QObject
 public:
     explicit UDPSender(QObject *parent = nullptr);
 
+    Q_INVOKABLE void catchPacket();
     Q_INVOKABLE void sendPacket();
 signals:
     void showConnectionPage(const QString &message);
