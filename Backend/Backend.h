@@ -1,4 +1,3 @@
-
 #ifndef BACKEND_H
 #define BACKEND_H
 
@@ -38,6 +37,7 @@ class Backend : public QObject
 
 
 public:
+    ListModel *m_model = nullptr;
     explicit Backend(QObject *parent = nullptr);
     ListModel* model() const { return m_model; }
 
@@ -46,7 +46,6 @@ public:
 
     Q_INVOKABLE void tcpConnection_REC(const QString &ip);
     Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
-    Q_INVOKABLE
     QString message;
     Q_INVOKABLE void transferFilesTCP();
 
@@ -55,17 +54,16 @@ signals:
     void tcpConnected(const QString &ip);
 
 private:
-    ListModel *m_model = nullptr;
     QUdpSocket *senderSocket = nullptr;
     QUdpSocket *catcherSocket = nullptr;
 
 
-    void sendStatusPacket(const QString &ip);
+    //void sendStatusPacket(const QString &ip);
 
 
 private slots:
-    void onReadyRead();
-    void onDoConnectionBox(const QString &ip);
+    //void onReadyRead();
+    //void onDoConnectionBox(const QString &ip);
 };
 
 class FileDialogHelper : public QObject

@@ -21,7 +21,7 @@ Window {
     property int user //0 sender //1 receiver
 
     Connections {
-        target: backend
+        target: udpSender
         function onShowConnectionPage(message) {
             senderRequest = message
             overlay.source = "ConnectionRequest.qml"
@@ -31,6 +31,19 @@ Window {
             loader.source = "FileShare.qml"
         }
     }
+
+    Connections {
+        target: udpReceiver
+        function onShowConnectionPage(message) {
+            senderRequest = message
+            overlay.source = "ConnectionRequest.qml"
+        }
+
+        function onTcpConnected(ip) {
+            loader.source = "FileShare.qml"
+        }
+    }
+
 
     Loader {
         id: overlay
@@ -102,7 +115,7 @@ Window {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        backend.catchPacket()
+                        udpSender.catchPacket()
                         loader.source = "Send_UI.qml"
                         user = 0
                     }
@@ -123,8 +136,8 @@ Window {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        backend.sendPacket()
-                        backend.catchPacket()
+                        udpReceiver.sendPacket()
+                        udpReceiver.catchPacket()
                         loader.source = "Receive_UI.qml"
                         user = 1
                     }

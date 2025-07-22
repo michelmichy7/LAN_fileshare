@@ -5,26 +5,10 @@
 #include <QUdpSocket>
 #include <QThread>
 
-Backend::Backend(QObject *parent)
+UDPReceiver::UDPReceiver(QObject *parent)
     : QObject{parent}
 {
-    if (!m_model) {
-        m_model = new ListModel(this);
-        connect(m_model, &ListModel::doConnectionBox, this, &Backend::onDoConnectionBox);
-    }
-}
-
-void UDPSender::sendPacket() {
-//change this
-    if (!senderSocket) {
-        senderSocket = new QUdpSocket(this);
-
-        senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
-        qDebug() << "Sended packet to find Sender";
-
-    }
-
+    connect(m_model, &ListModel::doConnectionBox, this, &UDPReceiver::onDoConnectionBox);
 }
 
 void UDPReceiver::catchPacket() {
@@ -39,6 +23,11 @@ void UDPReceiver::catchPacket() {
             return;
         }
     }
+}
+
+void UDPReceiver::sendPacket()
+{
+
 }
 
 void UDPReceiver::onReadyRead()
@@ -88,39 +77,13 @@ void UDPReceiver::onReadyRead()
     }
 }
 
-void UDPSender::onDoConnectionBox(const QString &ip)
+
+
+void UDPSender::sendStatusPacket(const QString& ip)
 {
-    if (!senderSocket) {
-        senderSocket = new QUdpSocket(this);
-
-        // Bind to any free port for sending only, before writing
-        bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        qDebug() << "onConnection";
-        if (!success) {
-            qDebug() << "Bind Failed: " << senderSocket->errorString();
-            return;
-        }
-    }
-
-    QByteArray data("CONNECT_REQUEST");
-    senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
-}
-
-void UDPSender::sendStatusPacket(const QString &ip)
-{
-    if (!senderSocket) {
-        senderSocket = new QUdpSocket(this);
-        connect(senderSocket, &QUdpSocket::readyRead, this, &UDPSender::onReadyRead);
-        bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        qDebug() << "onConnection";
-        if (!success) {
-            qDebug() << "Bind Failed: " << senderSocket->errorString();
-            return;
-        }
-    }
-
     QByteArray data = "TCP_CONNECTED";
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
+    qDebug() << "UDP status packet sent to" << ip;
 }
 
 void ListModel::handleDevClick(int index)

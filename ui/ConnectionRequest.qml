@@ -18,8 +18,6 @@ Rectangle {
         color: "#141414"
         radius: 15
 
-
-
         Text {
             text: senderRequest + " wants to share files with you, do you agree?"
             color: "white"

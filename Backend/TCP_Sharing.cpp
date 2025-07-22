@@ -1,7 +1,16 @@
 #include "Backend.h"
+
+#include "tcpside.h"
+
 #include <QFile>
 
-void Backend::tcpConnection_REC(const QString &ip) {
+TCPClient::TCPClient(Backend *m_backend, QObject *parent)
+    : QObject{parent}, m_backend(m_backend)
+{
+
+}
+
+void TCPClient::tcpConnection_REC(const QString &ip) {
     if (!tcpSocket) {
         tcpSocket = new QTcpSocket(this);
 
@@ -9,13 +18,17 @@ void Backend::tcpConnection_REC(const QString &ip) {
 
          connect(tcpSocket, &QTcpSocket::connected, this, [this, ip]()  {
             qDebug() << "Connected TCP socket: " << ip;
-            emit tcpConnected(ip);
-            sendStatusPacket(ip);
+            emit m_backend->tcpConnected(ip);
         });
     }
 }
 
-void Backend::tcpConnection_SEN(const QString &ip) {
+TCPServer::TCPServer(QObject *parent)
+    : QObject{parent}
+{
+
+}
+void TCPServer::tcpConnection_SEN(const QString &ip) {
     if (!tcpServer) {
         tcpServer = new QTcpServer(this);
 
@@ -29,7 +42,7 @@ void Backend::tcpConnection_SEN(const QString &ip) {
     }
 }
 
-    void Backend::transferFilesTCP() {
+    void TCPClient::transferFilesTCP() {
         FileDialogHelper dialog;
         QStringList pastedFiles = dialog.openFileDialog();
         if (!tcpSocket || tcpSocket->state() != QAbstractSocket::ConnectedState) {

@@ -14,13 +14,22 @@ public:
 
     Q_INVOKABLE void sendPacket();
 signals:
+    void showConnectionPage(const QString &message);
+    void tcpConnected(const QString &ip);
 
 private:
     QUdpSocket *senderSocket = nullptr;
 
+    Backend backend;
+    ListModel* m_model = backend.m_model;
+
+public slots:
+    void sendStatusPacket(const QString& ip);
+
 
 private slots:
     void onDoConnectionBox(const QString &ip);
+
     void onReadyRead();
 };
 
@@ -35,13 +44,22 @@ public:
 
     Q_INVOKABLE void catchPacket();
     Q_INVOKABLE void sendPacket();
+
+    ListModel* model() const { return m_model; }
+
 signals:
     void showConnectionPage(const QString &message);
+
+    void tcpConnected(const QString &ip);
+
+
 private slots:
-    void onReadyRead();
+    void onReadyRead();    
+    void onDoConnectionBox(const QString &ip);
 
 private:
     Backend backend;
+    ListModel* m_model = backend.m_model;
     QUdpSocket *catcherSocket = nullptr;
 };
 
