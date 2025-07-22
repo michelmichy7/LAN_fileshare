@@ -36,16 +36,6 @@ void UDPSender::sendPacket() {
     qDebug() << "Sended packet to find Sender";
 }
 
-
-
-void UDPSender::sendStatusPacket(const QString& ip)
-{
-    QByteArray data = "TCP_CONNECTED";
-    senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
-    qDebug() << "UDP status packet sent to" << ip;
-}
-
-
 void UDPSender::onReadyRead()
 {
     while (senderSocket->hasPendingDatagrams()) {

@@ -77,7 +77,10 @@ void UDPReceiver::onReadyRead()
     }
 }
 
+void UDPReceiver::onDoConnectionBox(const QString &ip)
+{
 
+}
 
 void UDPSender::sendStatusPacket(const QString& ip)
 {
@@ -101,5 +104,3 @@ void ListModel::addItem(const QString &item)
     list.append(item);
     setStringList(list);
 }
-
-
