@@ -9,6 +9,8 @@
 class UDPSender : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(ListModel* model READ model CONSTANT)
+
 public:
     explicit UDPSender(QObject *parent = nullptr);
 

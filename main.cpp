@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 
     UDPSender udpSender;
     engine.rootContext()->setContextProperty("udpSender", &udpSender);
+
     UDPSender udpReceiver;
     engine.rootContext()->setContextProperty("udpReceiver", &udpReceiver);
 
