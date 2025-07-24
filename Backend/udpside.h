@@ -10,7 +10,7 @@ class UDPSender : public QObject
 {
     Q_OBJECT
 public:
-    explicit UDPSender(QObject *parent = nullptr);
+    explicit UDPSender(Backend* backend, QObject *parent = nullptr);
 
     Q_INVOKABLE void catchPacket();
     Q_INVOKABLE void sendPacket();
@@ -21,8 +21,8 @@ signals:
 private:
     QUdpSocket *senderSocket = nullptr;
 
-    Backend backend;
-    ListModel* m_model = backend.m_model;
+    Backend* m_backend = nullptr;
+    ListModel* m_model = nullptr;
 
 public slots:
     void sendStatusPacket(const QString& ip);

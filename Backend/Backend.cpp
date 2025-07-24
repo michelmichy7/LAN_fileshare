@@ -3,7 +3,7 @@
 Backend::Backend(QObject *parent)
     : QObject{parent}
 {
-
+    m_model = new ListModel(this);
 }
 
 void Backend::sendPacket()

@@ -1,14 +1,10 @@
 #include "udpside.h"
 
-UDPSender::UDPSender(QObject *parent)
-    : QObject{parent}
+UDPSender::UDPSender(Backend* backend, QObject *parent)
+    : QObject(parent), m_backend(backend)
 {
-    senderSocket = new QUdpSocket(this);
-    bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0,
-                                      QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    if (!success) {
-        qDebug() << "UDP bind failed:" << senderSocket->errorString();
-    }
+    m_model = backend->model();
+
 }
 
 void UDPSender::catchPacket()
@@ -25,7 +21,6 @@ void UDPSender::catchPacket()
         }
     }
 }
-
 void UDPSender::sendStatusPacket(const QString& ip)
 {
     QByteArray data = "TCP_CONNECTED";
