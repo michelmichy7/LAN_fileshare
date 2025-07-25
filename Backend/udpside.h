@@ -9,11 +9,14 @@
 class UDPSender : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(ListModel* model READ model CONSTANT)
+
 public:
     explicit UDPSender(Backend* backend, QObject *parent = nullptr);
-
+    ListModel* model() const { return m_model; }
     Q_INVOKABLE void catchPacket();
     Q_INVOKABLE void sendPacket();
+
 signals:
     void showConnectionPage(const QString &message);
     void tcpConnected(const QString &ip);
@@ -55,7 +58,7 @@ signals:
 
 
 private slots:
-    void onReadyRead();    
+    void onReadyRead();
     void onDoConnectionBox(const QString &ip);
 
 private:

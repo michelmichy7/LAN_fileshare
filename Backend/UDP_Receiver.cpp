@@ -27,8 +27,12 @@ void UDPReceiver::catchPacket() {
 
 void UDPReceiver::sendPacket()
 {
+    bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+    if (!success) {
+        qDebug() << "Bind Failed: " << catcherSocket->errorString();
+        return;
+    }
     //change this
-    catcherSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
     catcherSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
     qDebug() << "Sended packet to find Sender";
 }
