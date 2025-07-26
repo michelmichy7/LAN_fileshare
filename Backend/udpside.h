@@ -1,21 +1,25 @@
 #ifndef UDPSIDE_H
 #define UDPSIDE_H
 
-#include "Backend/Backend.h"
 #include <QObject>
 #include <QUdpSocket>
 #include <QDebug>
 
-class UDPSender : public QObject
+class Backend;
+class ListModel;
+
+class UDPManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ListModel* model READ model CONSTANT)
 
 public:
-    explicit UDPSender(Backend* backend, QObject *parent = nullptr);
+    explicit UDPManager(Backend* backend, QObject *parent = nullptr);
     ListModel* model() const { return m_model; }
     Q_INVOKABLE void catchPacket();
-    Q_INVOKABLE void sendPacket();
+    Q_INVOKABLE void sendPacket(const QString &datagram, QHostAddress ip = QHostAddress::Broadcast);
+
+    QString ipOF_HOST;
 
 signals:
     void showConnectionPage(const QString &message);
@@ -39,17 +43,17 @@ private slots:
 
 
 
-
 class UDPReceiver : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(ListModel* model READ model CONSTANT)
 public:
-    explicit UDPReceiver(QObject *parent = nullptr);
+    explicit UDPReceiver(Backend* backend, QObject *parent = nullptr);
+    ListModel* model() const { return m_model; }
 
     Q_INVOKABLE void catchPacket();
     Q_INVOKABLE void sendPacket();
 
-    ListModel* model() const { return m_model; }
 
 signals:
     void showConnectionPage(const QString &message);
@@ -62,8 +66,8 @@ private slots:
     void onDoConnectionBox(const QString &ip);
 
 private:
-    Backend backend;
-    ListModel* m_model = backend.m_model;
+    Backend* m_backend;
+    ListModel* m_model = nullptr;
     QUdpSocket *catcherSocket = nullptr;
 };
 

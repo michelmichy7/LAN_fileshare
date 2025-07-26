@@ -1,34 +1,60 @@
-#include "udpside.h"
+#include "Backend/udpside.h"
+#include "Backend/Backend.h"
 
-UDPSender::UDPSender(Backend* backend, QObject *parent)
+
+UDPManager::UDPManager(Backend* backend, QObject *parent)
     : QObject(parent), m_backend(backend)
 {
     m_model = backend->model();
+    senderSocket = new QUdpSocket(this);
 
 }
 
-void UDPSender::catchPacket()
-{
-    if (!senderSocket) {
+void UDPManager::sendPacket(const QString &datagram, QHostAddress ip) {
+    if (!senderSocket->isValid()) {
+        connect(senderSocket, &QUdpSocket::readyRead, this, &UDPManager::onReadyRead);
 
-        senderSocket = new QUdpSocket(this);
-        connect(senderSocket, &QUdpSocket::readyRead, this, &UDPSender::onReadyRead);
-
-        bool success = senderSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        if (!success) {
-            qDebug() << "Bind Failed: " << senderSocket->errorString();
+        if (!senderSocket->bind(QHostAddress::Any,
+                                45454,
+                                QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
+            qDebug() << "Failed to bind socket:" << senderSocket->errorString();
             return;
         }
     }
+
+    QByteArray data = datagram.toUtf8();
+    qint64 bytesSent = senderSocket->writeDatagram(data,
+                                                   ip,
+                                                   45454);
+    if (bytesSent == -1 && datagram == "FIND_DEVICE") {
+        qDebug() << "Failed to send packet:" << senderSocket->errorString();
+    } else {
+        qDebug() << "Sended packet";
+    }
 }
-void UDPSender::sendStatusPacket(const QString& ip)
+
+void UDPManager::catchPacket()
+{
+    if (!senderSocket) {
+        senderSocket = new QUdpSocket(this);
+    }
+
+
+    bool success = senderSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+    if (!success) {
+        qDebug() << "Bind Failed: " << senderSocket->errorString();
+        return;
+    }
+
+}
+void UDPManager::sendStatusPacket(const QString& ip)
 {
     QByteArray data = "TCP_CONNECTED";
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
     qDebug() << "UDP status packet sent to" << ip;
 }
 
-void UDPSender::onDoConnectionBox(const QString &ip)
+void UDPManager::onDoConnectionBox(const QString &ip)
 {
     if (!senderSocket) {
         senderSocket = new QUdpSocket(this);
@@ -46,14 +72,7 @@ void UDPSender::onDoConnectionBox(const QString &ip)
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 
-void UDPSender::sendPacket() {
-    //change this
-    senderSocket->bind(QHostAddress::Any, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    senderSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
-    qDebug() << "Sended packet to find Sender";
-}
-
-void UDPSender::onReadyRead()
+void UDPManager::onReadyRead()
 {
     while (senderSocket->hasPendingDatagrams()) {
         QHostAddress senderIP;
@@ -83,13 +102,9 @@ void UDPSender::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device at:" << rawIP;
-            m_model->addItem(rawIP);
-            qDebug() << "Current model size:" << m_model->rowCount();
+            m_backend->addDev_ToList(rawIP);
 
-            QStringList allItems = m_model->stringList();
-            for (const QString &item : std::as_const(allItems)) {
-                qDebug() << item;
-            }
+
         } else if (datagram == "CONNECT_REQUEST") {
             qDebug() << "Received connection request from:" << rawIP;
             emit showConnectionPage(rawIP);

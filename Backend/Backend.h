@@ -1,6 +1,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include "Backend/udpside.h"
 #include <QObject>
 #include <QUdpSocket>
 #include <QTcpSocket>
@@ -10,6 +11,23 @@
 #include <QPair>
 #include <QHostAddress>
 #include <QStringListModel>
+
+
+class StatusClass
+{
+    Q_GADGET
+public:
+    //explicit StatusClass();
+
+    enum ConnectionState {
+        IDLE = 0,
+        DISCOVERING_DEVICES,
+        TOLD_ABOUT_SELF,
+        REQUESTING_FOR_CONNECTION
+    };
+    Q_ENUM(ConnectionState)
+};
+
 
 
 class ListModel : public QStringListModel
@@ -30,39 +48,53 @@ signals:
 
 };
 
+
+
 class Backend : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ListModel* model READ model CONSTANT)
+    Q_PROPERTY(QString theirIp READ theirIp WRITE setTheirIp NOTIFY theirIPChanged)
 
 
 public:
     ListModel *m_model = nullptr;
     explicit Backend(QObject *parent = nullptr);
-    ListModel* model() const { return m_model; }
 
-    Q_INVOKABLE void sendPacket();
-    Q_INVOKABLE void catchPacket();
+    Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
+
+    ListModel* model() const { return m_model; }
 
     Q_INVOKABLE void tcpConnection_REC(const QString &ip);
     Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
     QString message;
     Q_INVOKABLE void transferFilesTCP();
 
+    void addDev_ToList(const QString &ip);
+
+    QString theirIp() const { return m_theirValue.toString(); }
+
+    void setTheirIp(QString &val) {
+        QHostAddress addr(val);
+        if (m_theirValue != addr) {
+            m_theirValue = addr;
+            emit theirIPChanged();
+        }
+    }
+
 signals:
     void showConnectionPage(const QString &message);
     void tcpConnected(const QString &ip);
+    void udpSecHost(const QString &ip);
+
+    void theirIPChanged();
 
 private:
-    QUdpSocket *senderSocket = nullptr;
-    QUdpSocket *catcherSocket = nullptr;
-
-
     //void sendStatusPacket(const QString &ip);
-
+    UDPManager m_udpManager;
+    QHostAddress m_theirValue;
 
 private slots:
-    //void onReadyRead();
     //void onDoConnectionBox(const QString &ip);
 };
 

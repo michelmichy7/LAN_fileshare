@@ -11,7 +11,10 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
+
     Backend backend;
+    engine.rootContext()->setContextProperty("backend", &backend);
+    engine.rootContext()->setContextProperty("listModel", backend.model());
 
     TCPServer tcpServer;
     engine.rootContext()->setContextProperty("tcpServer", &tcpServer);
@@ -19,27 +22,28 @@ int main(int argc, char *argv[])
     TCPClient tcpClient(&backend);
     engine.rootContext()->setContextProperty("tcpClient", &tcpClient);
 
-    UDPSender udpSender(&backend);
-    engine.rootContext()->setContextProperty("udpSender", &udpSender);
+    UDPManager udpManager(&backend);
+    engine.rootContext()->setContextProperty("udpSender", &udpManager);
 
+    // You had udpReceiver commented out
+    /*
     UDPSender udpReceiver(&backend);
     engine.rootContext()->setContextProperty("udpReceiver", &udpReceiver);
-
-    engine.rootContext()->setContextProperty("backend", &backend);
-    engine.rootContext()->setContextProperty("listModel", backend.model());
+    */
 
     FileDialogHelper fileDialogHelper;
     engine.rootContext()->setContextProperty("FileDialogHelper", &fileDialogHelper);
+    // Register enum type for QML access
+    qmlRegisterUncreatableType<StatusClass>("LAN.Backend", 1, 0, "StatusClass", "Not creatable as it is an enum type");
 
+    // Connect signals
     QObject::connect(&backend, &Backend::tcpConnected,
-                     &udpSender, &UDPSender::sendStatusPacket);
+                     &udpManager, &UDPManager::sendStatusPacket);
 
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreationFailed,
-        &app,
-        []() { QCoreApplication::exit(-1); },
-        Qt::QueuedConnection);
+    // Handle QML load failure
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
+                     &app, []() { QCoreApplication::exit(-1); },
+                     Qt::QueuedConnection);
 
     engine.loadFromModule("LAN_fileshare", "Main");
 

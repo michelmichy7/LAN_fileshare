@@ -21,7 +21,7 @@ qt_add_qml_module(appLAN_fileshare
         Backend/FileDialogHelper.cpp
         Backend/UDP_Receiver.cpp
         Backend/TCP_Sharing.cpp
-        Backend/UDP_Sender.cpp
+        Backend/UDP_Manager.cpp
     QML_FILES
         ui/Main.qml
         ui/Send_UI.qml

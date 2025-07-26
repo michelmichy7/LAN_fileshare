@@ -29,7 +29,8 @@ Rectangle {
                         onClicked: {
                             backend.model.handleDevClick(index)
                             console.log("Clicked IP:", model.display)
-                            backend.catchPacket()
+                            backend.setConnectionState(StatusClass.REQUESTING_CONNECTION)
+                            backend.theirIp = model.display
                         }
                     }
 

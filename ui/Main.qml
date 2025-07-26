@@ -3,6 +3,9 @@ import QtQuick.Controls
 import QtQuick.Controls.Basic
 import "Icons/qml"
 
+import LAN.Backend 1.0
+
+
 Window {
     width: 640
     height: 480
@@ -10,18 +13,13 @@ Window {
     title: qsTr("Nearby File Sender")
     color: "#141414"
 
-    Component {
-        id: connectionState
-        Rectangle {
 
-        }
-    }
 
     property string senderRequest: ""
     property int user //0 sender //1 receiver
-
+/*
     Connections {
-        target: udpSender
+        target: udpManager
         function onShowConnectionPage(message) {
             senderRequest = message
             overlay.source = "ConnectionRequest.qml"
@@ -33,7 +31,7 @@ Window {
     }
 
     Connections {
-        target: udpReceiver
+        target: udpManager
         function onShowConnectionPage(message) {
             senderRequest = message
             overlay.source = "ConnectionRequest.qml"
@@ -42,7 +40,7 @@ Window {
         function onTcpConnected(ip) {
             loader.source = "FileShare.qml"
         }
-    }
+    }*/
 
 
     Loader {
@@ -115,7 +113,8 @@ Window {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        udpSender.catchPacket()
+                        backend.setConnectionState(StatusClass.DISCOVERING_DEVICES)
+
                         loader.source = "Send_UI.qml"
                         user = 0
                     }
@@ -136,11 +135,13 @@ Window {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        udpReceiver.sendPacket()
-                        udpReceiver.catchPacket()
+                        backend.setConnectionState(StatusClass.TOLD_ABOUT_SELF)
+
+
                         loader.source = "Receive_UI.qml"
                         user = 1
                     }
+
                 }
             }
         }

@@ -5,10 +5,13 @@
 #include <QUdpSocket>
 #include <QThread>
 
-UDPReceiver::UDPReceiver(QObject *parent)
-    : QObject{parent}
+UDPReceiver::UDPReceiver(Backend* backend, QObject *parent)
+    : QObject(parent), m_backend(backend)
 {
+    m_model = backend->model();
     connect(m_model, &ListModel::doConnectionBox, this, &UDPReceiver::onDoConnectionBox);
+   // catcherSocket = new QUdpSocket(this);
+
 }
 
 void UDPReceiver::catchPacket() {
@@ -27,14 +30,12 @@ void UDPReceiver::catchPacket() {
 
 void UDPReceiver::sendPacket()
 {
-    bool success = catcherSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    if (!success) {
-        qDebug() << "Bind Failed: " << catcherSocket->errorString();
-        return;
-    }
     //change this
-    catcherSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
-    qDebug() << "Sended packet to find Sender";
+    if (!catcherSocket) {
+        catcherSocket = new QUdpSocket(this);
+        catcherSocket->writeDatagram(QByteArray("FIND_DEVICE"), QHostAddress::Broadcast, 45454);
+        qDebug() << "Sended packet to find Sender";
+    }
 }
 
 void UDPReceiver::onReadyRead()
