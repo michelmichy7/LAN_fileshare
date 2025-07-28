@@ -7,6 +7,11 @@ Backend::Backend(QObject *parent)
     m_model = new ListModel(this);
 }
 
+QObject* Backend::udpManager() const {
+    return (QObject*)&m_udpManager;
+}
+
+
 void Backend::setConnectionState(StatusClass::ConnectionState state)
 {
     if (state == 1) {

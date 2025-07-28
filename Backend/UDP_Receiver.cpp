@@ -4,7 +4,7 @@
 #include <QCoreApplication>
 #include <QUdpSocket>
 #include <QThread>
-
+/*
 UDPReceiver::UDPReceiver(Backend* backend, QObject *parent)
     : QObject(parent), m_backend(backend)
 {
@@ -103,7 +103,7 @@ void UDPReceiver::onDoConnectionBox(const QString &ip)
     catcherSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
 
-
+*/
 
 void ListModel::handleDevClick(int index)
 {

@@ -1,7 +1,8 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
-#include "Backend/udpside.h"
+
+
 #include <QObject>
 #include <QUdpSocket>
 #include <QTcpSocket>
@@ -12,6 +13,7 @@
 #include <QHostAddress>
 #include <QStringListModel>
 
+#include "Backend/udpside.h"
 
 class StatusClass
 {
@@ -55,12 +57,13 @@ class Backend : public QObject
     Q_OBJECT
     Q_PROPERTY(ListModel* model READ model CONSTANT)
     Q_PROPERTY(QString theirIp READ theirIp WRITE setTheirIp NOTIFY theirIPChanged)
+    Q_PROPERTY(QObject* udpManager READ udpManager CONSTANT);
 
 
 public:
     ListModel *m_model = nullptr;
     explicit Backend(QObject *parent = nullptr);
-
+    QObject* udpManager() const;
     Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
 
     ListModel* model() const { return m_model; }
@@ -86,9 +89,7 @@ signals:
     void showConnectionPage(const QString &message);
     void tcpConnected(const QString &ip);
     void udpSecHost(const QString &ip);
-
     void theirIPChanged();
-
 private:
     //void sendStatusPacket(const QString &ip);
     UDPManager m_udpManager;

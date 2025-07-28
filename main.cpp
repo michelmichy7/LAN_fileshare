@@ -22,8 +22,7 @@ int main(int argc, char *argv[])
     TCPClient tcpClient(&backend);
     engine.rootContext()->setContextProperty("tcpClient", &tcpClient);
 
-    UDPManager udpManager(&backend);
-    engine.rootContext()->setContextProperty("udpSender", &udpManager);
+    engine.rootContext()->setContextProperty("udpManager", backend.udpManager());
 
     // You had udpReceiver commented out
     /*
@@ -37,8 +36,9 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<StatusClass>("LAN.Backend", 1, 0, "StatusClass", "Not creatable as it is an enum type");
 
     // Connect signals
-    QObject::connect(&backend, &Backend::tcpConnected,
-                     &udpManager, &UDPManager::sendStatusPacket);
+   /* QObject::connect(&backend, &Backend::tcpConnected,
+                     qobject_cast<UDPManager*>(backend.udpManager()), &UDPManager::sendStatusPacket);*/
+
 
     // Handle QML load failure
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,

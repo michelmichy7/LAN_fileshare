@@ -5,22 +5,24 @@
 UDPManager::UDPManager(Backend* backend, QObject *parent)
     : QObject(parent), m_backend(backend)
 {
-    m_model = backend->model();
     senderSocket = new QUdpSocket(this);
+    bool success = senderSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+    if (!success) {
+        qDebug() << "Bind Failed: " << senderSocket->errorString();
+        return;
+    }
+    m_model = backend->model();
 
+    m_localIPs = getLocalIPs();
+    m_backend->setConnectionState(StatusClass::DISCOVERING_DEVICES);
+
+    qDebug() << "UDPManager created at" << this;
+
+
+    connect(senderSocket, &QUdpSocket::readyRead, this, &UDPManager::onReadyRead);
 }
 
 void UDPManager::sendPacket(const QString &datagram, QHostAddress ip) {
-    if (!senderSocket->isValid()) {
-        connect(senderSocket, &QUdpSocket::readyRead, this, &UDPManager::onReadyRead);
-
-        if (!senderSocket->bind(QHostAddress::Any,
-                                45454,
-                                QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
-            qDebug() << "Failed to bind socket:" << senderSocket->errorString();
-            return;
-        }
-    }
 
     QByteArray data = datagram.toUtf8();
     qint64 bytesSent = senderSocket->writeDatagram(data,
@@ -33,18 +35,18 @@ void UDPManager::sendPacket(const QString &datagram, QHostAddress ip) {
     }
 }
 
+QStringList UDPManager::getLocalIPs()
+{
+    QStringList result;
+    for (const QHostAddress &addr : QNetworkInterface::allAddresses()) {
+        if (addr.protocol() == QAbstractSocket::IPv4Protocol && !addr.isLoopback())
+            result << addr.toString();
+    }
+    return result;
+}
+
 void UDPManager::catchPacket()
 {
-    if (!senderSocket) {
-        senderSocket = new QUdpSocket(this);
-    }
-
-
-    bool success = senderSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    if (!success) {
-        qDebug() << "Bind Failed: " << senderSocket->errorString();
-        return;
-    }
 
 }
 void UDPManager::sendStatusPacket(const QString& ip)
@@ -56,18 +58,7 @@ void UDPManager::sendStatusPacket(const QString& ip)
 
 void UDPManager::onDoConnectionBox(const QString &ip)
 {
-    if (!senderSocket) {
-        senderSocket = new QUdpSocket(this);
-
-        // Bind to any free port for sending only, before writing
-        bool success = senderSocket->bind(QHostAddress::AnyIPv4, 0, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-        qDebug() << "onConnection";
-        if (!success) {
-            qDebug() << "Bind Failed: " << senderSocket->errorString();
-            return;
-        }
-    }
-
+    qDebug() << "onConnection";
     QByteArray data("CONNECT_REQUEST");
     senderSocket->writeDatagram(data, QHostAddress(ip), 45454);
 }
@@ -102,13 +93,16 @@ void UDPManager::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device at:" << rawIP;
-            m_backend->addDev_ToList(rawIP);
-
-
-        } else if (datagram == "CONNECT_REQUEST") {
-            qDebug() << "Received connection request from:" << rawIP;
+            if (!m_localIPs.contains(rawIP)) {
+                m_backend->addDev_ToList(rawIP);
+            }
+        }
+        else if (datagram == "CONNECTION_REQUEST") {
+            qDebug() << "::Received connection request from:" << rawIP;
             emit showConnectionPage(rawIP);
-        } else if (datagram == "TCP_CONNECTED") {
+            qDebug("ConBox emitted");
+        }
+        else if (datagram == "TCP_CONNECTED") {
             qDebug() << "Connected: " << rawIP;
             emit tcpConnected(rawIP);
         }

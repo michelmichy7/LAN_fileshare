@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QDebug>
+#include <QNetworkInterface>
+
 
 class Backend;
 class ListModel;
@@ -31,6 +33,9 @@ private:
     Backend* m_backend = nullptr;
     ListModel* m_model = nullptr;
 
+    QStringList getLocalIPs();
+    QStringList m_localIPs;
+
 public slots:
     void sendStatusPacket(const QString& ip);
 
@@ -42,7 +47,7 @@ private slots:
 };
 
 
-
+/*
 class UDPReceiver : public QObject
 {
     Q_OBJECT
@@ -69,6 +74,6 @@ private:
     Backend* m_backend;
     ListModel* m_model = nullptr;
     QUdpSocket *catcherSocket = nullptr;
-};
+};*/
 
 #endif // UDPSIDE_H

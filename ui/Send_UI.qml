@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls.Basic
 
 import "Icons/qml"
+import LAN.Backend 1.0
 
 Rectangle {
     color: "#141414"
@@ -27,10 +28,10 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
+                            backend.theirIp = model.display
                             backend.model.handleDevClick(index)
                             console.log("Clicked IP:", model.display)
-                            backend.setConnectionState(StatusClass.REQUESTING_CONNECTION)
-                            backend.theirIp = model.display
+                            backend.setConnectionState(StatusClass.REQUESTING_FOR_CONNECTION)
                         }
                     }
 
