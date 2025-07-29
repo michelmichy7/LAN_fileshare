@@ -25,6 +25,9 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
     else if (state == 3) {
         m_udpManager.sendPacket("CONNECTION_REQUEST", m_theirValue);
     }
+    else if (state == 4) {
+        m_udpManager.sendPacket("CONNECTION_APPROVED", m_theirValue);
+    }
 
 }
 

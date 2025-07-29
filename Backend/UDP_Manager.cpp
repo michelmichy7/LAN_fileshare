@@ -93,14 +93,17 @@ void UDPManager::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device at:" << rawIP;
-            if (!m_localIPs.contains(rawIP)) {
+            //if (!m_localIPs.contains(rawIP)) {
                 m_backend->addDev_ToList(rawIP);
-            }
+            //}
         }
         else if (datagram == "CONNECTION_REQUEST") {
             qDebug() << "::Received connection request from:" << rawIP;
             emit showConnectionPage(rawIP);
             qDebug("ConBox emitted");
+        }
+        else if (datagram == "CONNECTION_APPROVED") {
+
         }
         else if (datagram == "TCP_CONNECTED") {
             qDebug() << "Connected: " << rawIP;

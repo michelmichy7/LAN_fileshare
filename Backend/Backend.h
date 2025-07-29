@@ -25,7 +25,8 @@ public:
         IDLE = 0,
         DISCOVERING_DEVICES,
         TOLD_ABOUT_SELF,
-        REQUESTING_FOR_CONNECTION
+        REQUESTING_FOR_CONNECTION,
+        CONNECTION_APPROVED
     };
     Q_ENUM(ConnectionState)
 };

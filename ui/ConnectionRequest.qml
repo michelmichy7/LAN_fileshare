@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import LAN.Backend 1.0
 
 Rectangle {
     id: reqOverlay
@@ -51,8 +52,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        reqOverlay.requestAccept()
-                        reqOverlay.doConnection()
+                        backend.setConnectionState(StatusClass.CONNECTION_APPROVED)
                     }
                 }
             }
