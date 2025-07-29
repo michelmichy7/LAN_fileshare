@@ -66,7 +66,7 @@ void Backend::addDev_ToList(const QString &ip)
 void ListModel::addItem(const QString &item)
 {
     QStringList list = stringList();
-    if (!list.contains(item)) { // optional: prevent duplicates
+    if (!list.contains(item)) {
         list.append(item);
         setStringList(list);
     }

@@ -7,6 +7,37 @@
 TCPManager::TCPManager(Backend* backend, QObject *parent)
     : QObject(parent)
 {
+    tcpServer = nullptr;
+    tcpSocket = nullptr;
+}
+
+void TCPManager::startServer(quint16 port)
+{
+
+}
+
+void TCPManager::connectToHost(const QString &ip, quint16 port)
+{
+
+}
+
+void TCPManager::sendData(const QByteArray &data)
+{
+
+}
+
+void TCPManager::onNewConnection()
+{
+
+}
+
+void TCPManager::onReadyRead()
+{
+
+}
+
+void TCPManager::onDisconnected()
+{
 
 }
 
