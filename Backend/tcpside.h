@@ -6,6 +6,23 @@
 #include <QObject>
 #include <QTcpServer>
 
+
+
+class TCPManager : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit TCPManager(Backend* backend, QObject *parent = nullptr);
+
+private:
+    QTcpServer *tcpServer = nullptr;
+    QTcpSocket *tcpSocket = nullptr;
+    Backend *m_backend = nullptr;
+};
+
+
+/*
 class TCPServer : public QObject
 {
     Q_OBJECT
@@ -34,4 +51,5 @@ private:
     QTcpSocket *tcpSocket = nullptr;
     Backend *m_backend = nullptr;
 };
+*/
 #endif // TCPSIDE_H

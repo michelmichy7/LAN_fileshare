@@ -26,7 +26,9 @@ public:
         DISCOVERING_DEVICES,
         TOLD_ABOUT_SELF,
         REQUESTING_FOR_CONNECTION,
-        CONNECTION_APPROVED
+        CONNECTION_APPROVED,
+        TCP_CONNECTED,
+        TCP_DISCONNECTED
     };
     Q_ENUM(ConnectionState)
 };

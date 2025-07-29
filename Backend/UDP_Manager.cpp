@@ -18,7 +18,6 @@ UDPManager::UDPManager(Backend* backend, QObject *parent)
 
     qDebug() << "UDPManager created at" << this;
 
-
     connect(senderSocket, &QUdpSocket::readyRead, this, &UDPManager::onReadyRead);
 }
 

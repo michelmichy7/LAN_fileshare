@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("backend", &backend);
     engine.rootContext()->setContextProperty("listModel", backend.model());
 
+/*
     TCPServer tcpServer;
     engine.rootContext()->setContextProperty("tcpServer", &tcpServer);
 
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("tcpClient", &tcpClient);
 
     engine.rootContext()->setContextProperty("udpManager", backend.udpManager());
-
+*/
     // You had udpReceiver commented out
     /*
     UDPSender udpReceiver(&backend);

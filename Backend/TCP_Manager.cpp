@@ -4,6 +4,17 @@
 
 #include <QFile>
 
+TCPManager::TCPManager(Backend* backend, QObject *parent)
+    : QObject(parent)
+{
+
+}
+
+/*
+ TCPSide::TCPSide(QObject *parent)
+    : QObject{parent}
+{}
+
 TCPClient::TCPClient(Backend *m_backend, QObject *parent)
     : QObject{parent}, m_backend(m_backend)
 {
@@ -72,7 +83,7 @@ void TCPServer::tcpConnection_SEN(const QString &ip) {
         tcpSocket->flush();
 
         qDebug() << "Sent file over TCP: " << filePath;
-*/
-    }
 
+    }
+*/
 

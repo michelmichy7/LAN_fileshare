@@ -52,7 +52,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        backend.setConnectionState(StatusClass.CONNECTION_APPROVED)
+                        reqOverlay.requestAccept();
                     }
                 }
             }

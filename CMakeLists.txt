@@ -19,13 +19,13 @@ qt_add_qml_module(appLAN_fileshare
         Backend/udpside.h
 
         Backend/FileDialogHelper.cpp
-        Backend/UDP_Receiver.cpp
-        Backend/TCP_Sharing.cpp
+
+        Backend/TCP_Manager.cpp
         Backend/UDP_Manager.cpp
     QML_FILES
         ui/Main.qml
-        ui/Send_UI.qml
-        ui/Receive_UI.qml
+
+
         ui/Icons/qml/ComputerIcon.qml
         ui/ConnectionRequest.qml
         ui/FileShare.qml
