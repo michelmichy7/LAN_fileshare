@@ -13,6 +13,7 @@
 #include <QHostAddress>
 #include <QStringListModel>
 
+#include "Backend/tcpside.h"
 #include "Backend/udpside.h"
 
 class StatusClass
@@ -60,13 +61,17 @@ class Backend : public QObject
     Q_OBJECT
     Q_PROPERTY(ListModel* model READ model CONSTANT)
     Q_PROPERTY(QString theirIp READ theirIp WRITE setTheirIp NOTIFY theirIPChanged)
-    Q_PROPERTY(QObject* udpManager READ udpManager CONSTANT);
+    Q_PROPERTY(QObject* udpManager READ udpManager CONSTANT)
+    Q_PROPERTY(QObject* tcpManager READ tcpManager CONSTANT)
+    Q_PROPERTY(StatusClass::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
 
 
 public:
-    ListModel *m_model = nullptr;
     explicit Backend(QObject *parent = nullptr);
+    ListModel *m_model = nullptr;
+
     QObject* udpManager() const;
+    QObject* tcpManager() const;
     Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
 
     ListModel* model() const { return m_model; }
@@ -88,15 +93,28 @@ public:
         }
     }
 
+    StatusClass::ConnectionState connectionState() const {
+        // You must return the actual state from somewhere — e.g.:
+        return m_connectionState;
+    }
+
+
 signals:
     void showConnectionPage(const QString &message);
     void tcpConnected(const QString &ip);
     void udpSecHost(const QString &ip);
     void theirIPChanged();
+
+    void connectionStateChanged();
 private:
     //void sendStatusPacket(const QString &ip);
     UDPManager m_udpManager;
+    TCPManager m_tcpManager;
     QHostAddress m_theirValue;
+
+private:
+    StatusClass::ConnectionState m_connectionState = StatusClass::IDLE;
+
 
 private slots:
     //void onDoConnectionBox(const QString &ip);

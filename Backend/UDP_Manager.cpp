@@ -92,9 +92,9 @@ void UDPManager::onReadyRead()
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device at:" << rawIP;
-            if (!m_localIPs.contains(rawIP)) {
+            //if (!m_localIPs.contains(rawIP)) {
                 m_backend->addDev_ToList(rawIP);
-            }
+            //}
         }
         else if (datagram == "CONNECTION_REQUEST") {
             qDebug() << "::Received connection request from:" << rawIP;

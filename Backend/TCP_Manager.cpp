@@ -13,33 +13,80 @@ TCPManager::TCPManager(Backend* backend, QObject *parent)
 
 void TCPManager::startServer(quint16 port)
 {
+    tcpServer = new QTcpServer(this);
 
+    connect(tcpServer, &QTcpServer::newConnection, this, &::TCPManager::onNewConnection);
+
+    if (!tcpServer->listen(QHostAddress::Any, port)) {
+        qDebug() << "Server could not start! Error:" << tcpServer->errorString();
+        return;
+    }
+
+    qDebug() << "Server started on port" << port;
 }
 
 void TCPManager::connectToHost(const QString &ip, quint16 port)
 {
+    if (!tcpSocket) {
+        tcpSocket = new QTcpSocket(this);
 
+        connect(tcpSocket, &QTcpSocket::readyRead, this, &TCPManager::onReadyRead);
+        connect(tcpSocket, &QTcpSocket::disconnected, this, &TCPManager::onDisconnected);
+        connect(tcpSocket, &QTcpSocket::connected, this, []() {
+            qDebug() << "Connected to server!";
+        });
+    }
+
+    tcpSocket->connectToHost(ip, port);
 }
+
 
 void TCPManager::sendData(const QByteArray &data)
 {
-
+    if (tcpSocket && tcpSocket->state() == QTcpSocket::ConnectedState) {
+        tcpSocket->write(data);
+    } else {
+        qDebug() << "Not connected to any host.";
+    }
 }
+
 
 void TCPManager::onNewConnection()
 {
+    QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
 
+    connect(clientSocket, &QTcpSocket::readyRead, this, &TCPManager::onReadyRead);
+    connect(clientSocket, &QTcpSocket::disconnected, this, &TCPManager::onDisconnected);
+
+    // Store the client socket if you want to communicate with it later
+    m_clientSockets.append(clientSocket);
+
+    qDebug() << "New client connected from" << clientSocket->peerAddress().toString();
 }
 
 void TCPManager::onReadyRead()
 {
+        QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+        if (!socket) return;
+
+        QByteArray data = socket->readAll();
+        qDebug() << "Received data:" << data;
+
+
 
 }
 
 void TCPManager::onDisconnected()
 {
+    QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+    if (!socket) return;
 
+    qDebug() << "Client disconnected:" << socket->peerAddress().toString();
+
+    m_clientSockets.removeAll(socket);
+    socket->deleteLater();
 }
+
 
 /*
  TCPSide::TCPSide(QObject *parent)

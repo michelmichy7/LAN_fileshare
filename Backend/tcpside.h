@@ -24,6 +24,9 @@ private:
     QTcpSocket *tcpSocket = nullptr;
     Backend *m_backend = nullptr;
 
+    QList<QTcpSocket*> m_clientSockets; // For storing connected clients on server
+
+
 private slots:
     void onNewConnection();
     void onReadyRead();

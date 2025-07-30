@@ -2,18 +2,28 @@
 
 Backend::Backend(QObject *parent)
     : QObject{parent},
-    m_udpManager(this)
+    m_udpManager(this), m_tcpManager(this)
 {
     m_model = new ListModel(this);
+    Q_PROPERTY(StatusClass::State connectionState READ connectionState NOTIFY connectionStateChanged)
+
 }
 
 QObject* Backend::udpManager() const {
     return (QObject*)&m_udpManager;
 }
 
+QObject* Backend::tcpManager() const {
+    return (QObject*)&m_tcpManager;
+}
 
 void Backend::setConnectionState(StatusClass::ConnectionState state)
 {
+    if (m_connectionState == state)
+        return;
+
+    m_connectionState = state;
+
     if (state == StatusClass::DISCOVERING_DEVICES) {
         //for loop in next
         qDebug() << "Connection state set to: " << state;
@@ -32,6 +42,7 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
     else if (state == StatusClass::TCP_CONNECTED) {
         m_udpManager.sendPacket("TCP_REQUEST", m_theirValue);
     }
+   emit connectionStateChanged();
 }
 
 

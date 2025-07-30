@@ -17,6 +17,7 @@ Window {
 
     property string senderRequest: ""
     property int user //0 sender //1 receiver
+    property string conState: ""
 
     Connections {
         target: backend.udpManager
@@ -25,34 +26,16 @@ Window {
             senderRequest = message
             overlay.source = "ConnectionRequest.qml"
         }
-/*
-        function onTcpConnected(ip) {
-            loader.source = "FileShare.qml"
-        }
-        */
-    }
 
+}
+    Connections {
+        target: backend
+        function onConnectionStateChanged() {
+             console.log("New state:", backend.connectionState)
 
-    Loader {
-        id: overlay
-        anchors.fill: parent
-        z: 4
-        onLoaded: {
-            if (overlay.item && overlay.item.hasOwnProperty("senderRequest")) {
-                overlay.item.senderRequest = senderRequest
-            }
-
-            item.requestDiscard.connect(function() {
-                overlay.source = ""
-            })
-
-            item.requestAccept.connect(function() {
-                backend.setConnectionState(StatusClass.CONNECTION_APPROVED)
-                overlay.source = ""
-            })
-            item.doConnection.connect(function() {
-                backend.tcpConnection_REC(senderRequest)
-                })
+             if (backend.connectionState === StatusClass.TCP_CONNECTED) {
+                 loader.source = "ConnectionRequest.qml"
+             }
         }
     }
 
@@ -72,6 +55,34 @@ Window {
             })
         }
     }
+    Loader {
+        id: overlay
+        anchors.fill: parent
+        z: 4
+        onLoaded: {
+            if (overlay.item && overlay.item.hasOwnProperty("senderRequest")) {
+                overlay.item.senderRequest = senderRequest
+            }
+
+            item.requestDiscard.connect(function() {
+                overlay.source = ""
+            })
+
+            item.requestAccept.connect(function() {
+                backend.setConnectionState(StatusClass.CONNECTION_APPROVED)
+                overlay.source = ""
+
+                //if (backend.connectionState === StatusClass.CONNECTION_APPROVED) {
+                        //loader.source = "ConnectionRequest.qml"
+                //}
+            })
+            item.doConnection.connect(function() {
+                backend.tcpConnection_REC(senderRequest)
+                })
+        }
+    }
+
+
 
 
     Rectangle {
