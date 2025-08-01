@@ -1,13 +1,13 @@
 #ifndef TCPSIDE_H
 #define TCPSIDE_H
 
-#include "Backend/Backend.h"
 
 #include <QObject>
 #include <QTcpServer>
 
 
-
+class Backend;
+class ListModel;
 class TCPManager : public QObject
 {
     Q_OBJECT
@@ -15,9 +15,10 @@ class TCPManager : public QObject
 public:
     explicit TCPManager(Backend* backend, QObject *parent = nullptr);
 
-    void startServer(quint16 port);
-    void connectToHost(const QString &ip, quint16 port);
+    void startServer(quint16 port = 45454);
+    void connectToHost(const QHostAddress &ip, quint16 port);
     void sendData(const QByteArray &data);
+    void doTCP_Connection();
 
 private:
     QTcpServer *tcpServer = nullptr;

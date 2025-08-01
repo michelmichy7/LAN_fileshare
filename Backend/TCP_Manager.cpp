@@ -11,6 +11,10 @@ TCPManager::TCPManager(Backend* backend, QObject *parent)
     tcpSocket = nullptr;
 }
 
+void TCPManager::doTCP_Connection() {
+
+}
+
 void TCPManager::startServer(quint16 port)
 {
     tcpServer = new QTcpServer(this);
@@ -25,7 +29,7 @@ void TCPManager::startServer(quint16 port)
     qDebug() << "Server started on port" << port;
 }
 
-void TCPManager::connectToHost(const QString &ip, quint16 port)
+void TCPManager::connectToHost(const QHostAddress &ip, quint16 port = 45454)
 {
     if (!tcpSocket) {
         tcpSocket = new QTcpSocket(this);

@@ -38,6 +38,8 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
     }
     else if (state == StatusClass::CONNECTION_APPROVED) {
         m_udpManager.sendPacket("CONNECTION_APPROVED", m_theirValue);
+        m_tcpManager.startServer();
+        m_tcpManager.connectToHost(m_theirValue, 45454);
     }
     else if (state == StatusClass::TCP_CONNECTED) {
         m_udpManager.sendPacket("TCP_REQUEST", m_theirValue);
