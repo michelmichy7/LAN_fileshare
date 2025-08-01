@@ -5,7 +5,7 @@
 #include <QFile>
 
 TCPManager::TCPManager(Backend* backend, QObject *parent)
-    : QObject(parent)
+    : QObject(parent), m_backend(backend)
 {
     tcpServer = nullptr;
     tcpSocket = nullptr;
@@ -36,8 +36,9 @@ void TCPManager::connectToHost(const QHostAddress &ip, quint16 port = 45454)
 
         connect(tcpSocket, &QTcpSocket::readyRead, this, &TCPManager::onReadyRead);
         connect(tcpSocket, &QTcpSocket::disconnected, this, &TCPManager::onDisconnected);
-        connect(tcpSocket, &QTcpSocket::connected, this, []() {
+        connect(tcpSocket, &QTcpSocket::connected, this, [this]() {
             qDebug() << "Connected to server!";
+            m_backend->setConnectionState(StatusClass::TCP_CONNECTED);
         });
     }
 

@@ -28,15 +28,26 @@ Window {
         }
 
 }
+    Component.onCompleted: {
+        console.log("Initial state:", backend.connectionState); // This forces QML to track it
+    }
+
     Connections {
         target: backend
         function onConnectionStateChanged() {
-             console.log("New state:", backend.connectionState)
-
-             if (backend.connectionState === StatusClass.TCP_CONNECTED) {
-                 loader.source = "ConnectionRequest.qml"
-             }
+            conState = backend.connectionState
+            console.log("New state:", conState)
+            if (conState === "5") {
+                loader.source = ""
+                reloadTimer.start()
+            }
         }
+    }
+
+    Timer {
+        id: reloadTimer
+        interval: 1
+        onTriggered: loader.source = "FileShare.qml"
     }
 
     Loader {

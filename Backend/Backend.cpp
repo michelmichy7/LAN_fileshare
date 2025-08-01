@@ -1,4 +1,5 @@
 #include "Backend.h"
+#include <QTimer>
 
 Backend::Backend(QObject *parent)
     : QObject{parent},
@@ -42,9 +43,11 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
         m_tcpManager.connectToHost(m_theirValue, 45454);
     }
     else if (state == StatusClass::TCP_CONNECTED) {
-        m_udpManager.sendPacket("TCP_REQUEST", m_theirValue);
+        //m_udpManager.sendPacket("TCP_REQUEST", m_theirValue);
     }
-   emit connectionStateChanged();
+    QTimer::singleShot(0, this, [this]() {
+        emit connectionStateChanged();
+    });
 }
 
 
