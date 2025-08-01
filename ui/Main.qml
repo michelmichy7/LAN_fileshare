@@ -37,17 +37,13 @@ Window {
         function onConnectionStateChanged() {
             conState = backend.connectionState
             console.log("New state:", conState)
+
+
             if (conState === "5") {
                 loader.source = ""
-                reloadTimer.start()
+                loader.source = "FileShare.qml"
             }
         }
-    }
-
-    Timer {
-        id: reloadTimer
-        interval: 1
-        onTriggered: loader.source = "FileShare.qml"
     }
 
     Loader {
