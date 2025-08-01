@@ -96,6 +96,7 @@ Rectangle {
                 }
             }
         }
+
         Rectangle {
             width: 120
             height: 35
@@ -114,7 +115,7 @@ Rectangle {
                 id: sendArea
                 anchors.fill: parent
                 onClicked: {
-                    tcpSender.transferFilesTCP();
+                    backend.tcpManager.sendData()
                 }
             }
         }

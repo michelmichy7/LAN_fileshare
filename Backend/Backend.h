@@ -29,7 +29,9 @@ public:
         REQUESTING_FOR_CONNECTION,
         CONNECTION_APPROVED,
         TCP_CONNECTED,
-        TCP_DISCONNECTED
+        TCP_DISCONNECTED,
+        TCP_SENDING_FILES,
+        TCP_RECEIVING_FILES
     };
     Q_ENUM(ConnectionState)
 };
