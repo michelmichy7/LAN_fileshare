@@ -24,7 +24,7 @@ Window {
         function onShowConnectionPage(message) {
             console.log("QML ConPage");
             senderRequest = message
-            overlay.source = "ConnectionRequest.qml"
+            overlay.source = "ConnectionRequest.qml" //DONE: on discard is needed to be changed state back to discovering
         }
 
 }
@@ -54,12 +54,7 @@ Window {
             if (loader.item && loader.item.hasOwnProperty("senderRequest")) {
                 loader.item.senderRequest = senderRequest
             }
-            item.requestDiscard.connect(function() {
-                overlay.sourceComponent = "connectionState"
-        })
-            item.requestAccept.connect(function() {
-                overlay.source = "FileShare.qml"
-            })
+
         }
     }
     Loader {
@@ -73,6 +68,7 @@ Window {
 
             item.requestDiscard.connect(function() {
                 overlay.source = ""
+                backend.setConnectionState(StatusClass.DISCOVERING_DEVICES)
             })
 
             item.requestAccept.connect(function() {
@@ -85,7 +81,7 @@ Window {
             })
             item.doConnection.connect(function() {
                 backend.tcpConnection_REC(senderRequest)
-                })
+            })
         }
     }
 

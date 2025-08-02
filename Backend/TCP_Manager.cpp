@@ -46,10 +46,16 @@ void TCPManager::connectToHost(const QHostAddress &ip, quint16 port = 45454)
 }
 
 
-void TCPManager::sendData(const QByteArray &data)
+void TCPManager::sendData()
 {
+    qDebug("Sending data");
+    for (int i = 0; i < m_backend->m_filesManager.m_selectedFiles.count(); ++i) {
+        // Fix: Use m_selectedFiles consistently, not selectedFiles
+        qDebug() << "Index:" << i << "File:" << m_backend->m_filesManager.m_selectedFiles[i];
+    }
+
     if (tcpSocket && tcpSocket->state() == QTcpSocket::ConnectedState) {
-        tcpSocket->write(data);
+        //tcpSocket->write(data);
     } else {
         qDebug() << "Not connected to any host.";
     }

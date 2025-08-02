@@ -16,6 +16,19 @@
 #include "Backend/tcpside.h"
 #include "Backend/udpside.h"
 
+class FileDialogHelper : public QObject
+{
+    Q_OBJECT
+public:
+    explicit FileDialogHelper(QObject *parent = nullptr);
+        Q_PROPERTY(QStringList selectedFiles READ selectedFiles NOTIFY selectedFilesChanged)
+    QStringList m_selectedFiles;
+    Q_INVOKABLE QStringList openFileDialog();
+    QStringList selectedFiles() const { return m_selectedFiles; }
+signals:
+    void selectedFilesChanged();
+};
+
 class StatusClass
 {
     Q_GADGET
@@ -24,14 +37,16 @@ public:
 
     enum ConnectionState {
         IDLE = 0,
-        DISCOVERING_DEVICES,
+        DISCOVERING_DEVICES, //if going back to this state, system wouldnt have to send packet everytime, to prevent spam of packets
         TOLD_ABOUT_SELF,
         REQUESTING_FOR_CONNECTION,
         CONNECTION_APPROVED,
+
         TCP_CONNECTED,
         TCP_DISCONNECTED,
         TCP_SENDING_FILES,
-        TCP_RECEIVING_FILES
+        TCP_RECEIVING_FILES,
+        SELECTING_FILES
     };
     Q_ENUM(ConnectionState)
 };
@@ -66,14 +81,19 @@ class Backend : public QObject
     Q_PROPERTY(QObject* udpManager READ udpManager CONSTANT)
     Q_PROPERTY(QObject* tcpManager READ tcpManager CONSTANT)
     Q_PROPERTY(StatusClass::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
+    Q_PROPERTY(FileDialogHelper* filesManager READ getFilesManager CONSTANT)
 
+
+    FileDialogHelper* getFilesManager() { return &m_filesManager; }
 
 public:
     explicit Backend(QObject *parent = nullptr);
     ListModel *m_model = nullptr;
+    FileDialogHelper m_filesManager;
 
     QObject* udpManager() const;
     QObject* tcpManager() const;
+    QObject* filesManager() const;
     Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
 
     ListModel* model() const { return m_model; }
@@ -112,7 +132,9 @@ private:
     //void sendStatusPacket(const QString &ip);
     UDPManager m_udpManager;
     TCPManager m_tcpManager;
+
     QHostAddress m_theirValue;
+
 
 private:
     StatusClass::ConnectionState m_connectionState = StatusClass::IDLE;
@@ -122,13 +144,6 @@ private slots:
     //void onDoConnectionBox(const QString &ip);
 };
 
-class FileDialogHelper : public QObject
-{
-    Q_OBJECT
-public:
-    explicit FileDialogHelper(QObject *parent = nullptr);
 
-    Q_INVOKABLE QStringList openFileDialog();
-};
 
 #endif // BACKEND_H

@@ -1,11 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import LAN.Backend 1.0
 
 Rectangle {
     anchors.fill: parent
     color: "#141414"
 
-    property var filePaths: []
+    property var filePaths: backend.filesManager.selectedFiles
 
     Column {
         anchors.centerIn: parent
@@ -91,7 +92,7 @@ Rectangle {
                 id: selectArea
                 anchors.fill: parent
                 onClicked: {
-                    let files = FileDialogHelper.openFileDialog()
+                    backend.setConnectionState(StatusClass.SELECTING_FILES)
                     filePaths = files
                 }
             }
@@ -115,7 +116,7 @@ Rectangle {
                 id: sendArea
                 anchors.fill: parent
                 onClicked: {
-                    backend.tcpManager.sendData()
+                    backend.setConnectionState(StatusClass.TCP_SENDING_FILES)
                 }
             }
         }
