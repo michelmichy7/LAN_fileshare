@@ -16,6 +16,13 @@
 #include "Backend/tcpside.h"
 #include "Backend/udpside.h"
 
+//Structs
+
+struct FileHeader {
+    QString name;
+    qint64 size;
+};
+
 class FileDialogHelper : public QObject
 {
     Q_OBJECT
@@ -88,6 +95,8 @@ class Backend : public QObject
 
 public:
     explicit Backend(QObject *parent = nullptr);
+    FileHeader fh;
+
     ListModel *m_model = nullptr;
     FileDialogHelper m_filesManager;
 
@@ -143,6 +152,7 @@ private:
 private slots:
     //void onDoConnectionBox(const QString &ip);
 };
+
 
 
 

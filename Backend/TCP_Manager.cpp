@@ -3,6 +3,7 @@
 #include "tcpside.h"
 
 #include <QFile>
+#include <qfileinfo.h>
 
 TCPManager::TCPManager(Backend* backend, QObject *parent)
     : QObject(parent), m_backend(backend)
@@ -50,16 +51,15 @@ void TCPManager::sendData()
 {
     qDebug("Sending data");
     for (int i = 0; i < m_backend->m_filesManager.m_selectedFiles.count(); ++i) {
-        // Fix: Use m_selectedFiles consistently, not selectedFiles
         qDebug() << "Index:" << i << "File:" << m_backend->m_filesManager.m_selectedFiles[i];
     }
-
     if (tcpSocket && tcpSocket->state() == QTcpSocket::ConnectedState) {
         //tcpSocket->write(data);
     } else {
         qDebug() << "Not connected to any host.";
     }
 }
+
 
 
 void TCPManager::onNewConnection()
