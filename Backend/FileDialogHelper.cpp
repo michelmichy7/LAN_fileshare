@@ -9,9 +9,10 @@ FileDialogHelper::FileDialogHelper(QObject *parent)
 QStringList FileDialogHelper::openFileDialog()
 {
     return QFileDialog::getOpenFileNames(
-        nullptr,
-        "Select Files",
-        QString(),
-        "All Files (*.*)"
+        nullptr,                                    // parent widget
+        "Select Files",                            // dialog caption
+        QString(),                                 // starting directory (empty = current)
+        "All Files (*.*);;Video (*.mp4)",         // file filters
+        nullptr                                    // selected filter (optional)
         );
 }
