@@ -103,21 +103,25 @@ public:
     StatusClass::ActivityState activityState() const {
         return m_activityState;
     }
+    StatusClass::ConnectionState connectionState() const {
+        return m_connectionState;
+    }
     Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
     Q_INVOKABLE void setActivityState(StatusClass::ActivityState state);
 
-    StatusClass::ConnectionState connectionState() const {
-        // You must return the actual state from somewhere — e.g.:
-        return m_connectionState;
-    }
-signals:
-    void activityStateChanged();
-
 private:
     StatusClass::ConnectionState m_connectionState = StatusClass::IDLE;
+    StatusClass::ActivityState m_activityState = StatusClass::NONE;
+signals:
+    void connectionStateChanged();
+    void activityStateChanged();
+
 
 private:
-    StatusClass::ActivityState m_activityState = StatusClass::NONE;
+
+
+private:
+
     FileDialogHelper* getFilesManager() { return &m_filesManager; }
 
 public:
@@ -151,16 +155,13 @@ public:
         }
     }
 
-
-
-
 signals:
     void showConnectionPage(const QString &message);
     void tcpConnected(const QString &ip);
     void udpSecHost(const QString &ip);
     void theirIPChanged();
 
-    void connectionStateChanged();
+
 private:
     //void sendStatusPacket(const QString &ip);
     UDPManager m_udpManager;

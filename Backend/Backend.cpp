@@ -6,8 +6,9 @@ Backend::Backend(QObject *parent)
     m_udpManager(this), m_tcpManager(this)
 {
     m_model = new ListModel(this);
-    Q_PROPERTY(StatusClass::State connectionState READ connectionState NOTIFY connectionStateChanged)
-
+    //Q_PROPERTY(StatusClass::State connectionState READ connectionState NOTIFY connectionStateChanged)
+    Q_PROPERTY(StatusClass::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
+    Q_PROPERTY(StatusClass::ActivityState activityState READ activityState NOTIFY activityStateChanged)
 }
 
 QObject* Backend::udpManager() const {
@@ -49,6 +50,10 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
 }
 
 void Backend::setActivityState(StatusClass::ActivityState state) {
+    if (m_activityState == state)
+        return;
+    m_activityState = state;
+
      if (state == StatusClass::SENDING_FILES) {
         m_tcpManager.sendData();
     } else if (state == StatusClass::RECEIVING_FILES) {
@@ -58,6 +63,7 @@ void Backend::setActivityState(StatusClass::ActivityState state) {
     }
     emit activityStateChanged();
 }
+
 
 void Backend::tcpConnection_REC(const QString &ip)
 {

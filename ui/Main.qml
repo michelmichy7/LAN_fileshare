@@ -47,7 +47,7 @@ Window {
         }
         function onActivityStateChanged() {
             actState = backend.activityState
-            console.log("New ActState", actState)
+            console.log("New ActState:", actState)
         }
     }
 
