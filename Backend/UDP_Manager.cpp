@@ -65,6 +65,11 @@ void UDPManager::onDoConnectionBox(const QString &ip)
 void UDPManager::onReadyRead()
 {
     while (senderSocket->hasPendingDatagrams()) {
+        if (m_backend->connectionState() == StatusClass::TCP_CONNECTED) {
+            qDebug() << "UDP: Another device tried connection, declined - already connected to another";
+            return;
+        }
+
         QHostAddress senderIP;
         QByteArray datagram;
         quint16 senderPort;

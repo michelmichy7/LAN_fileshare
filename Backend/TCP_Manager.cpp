@@ -28,6 +28,11 @@ void TCPManager::startServer(quint16 port)
 
 void TCPManager::connectToHost(const QHostAddress &ip, quint16 port = 45454)
 {
+    if (m_backend->connectionState() == StatusClass::TCP_CONNECTED) {
+        qDebug() << "TCP: Another device tried connection, declined - already connected to another";
+        return;
+    }
+
     if (!tcpSocket) {
         tcpSocket = new QTcpSocket(this);
 
@@ -96,6 +101,7 @@ void TCPManager::onReadyRead()
 
 void TCPManager::onDisconnected()
 {
+    m_backend->setConnectionState(StatusClass::ConnectionState::TCP_DISCONNECTED);
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     if (!socket) return;
 
