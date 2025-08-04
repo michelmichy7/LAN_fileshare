@@ -12,16 +12,14 @@
 #include <QPair>
 #include <QHostAddress>
 #include <QStringListModel>
+#include <qdatetime.h>
 
 #include "Backend/tcpside.h"
 #include "Backend/udpside.h"
+#include "Backend/fileManager.h"
 
 //Structs
 
-struct FileHeader {
-    QString name;
-    qint64 size;
-};
 
 class FileDialogHelper : public QObject
 {

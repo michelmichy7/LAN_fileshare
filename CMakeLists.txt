@@ -31,6 +31,7 @@ qt_add_qml_module(appLAN_fileshare
         ui/FileShare.qml
         SOURCES Backend/tcpside.h
         SOURCES Backend/Backend.cpp
+        SOURCES Backend/fileManager.h
 )
 
 qt_add_resources(appLAN_fileshare "resources"

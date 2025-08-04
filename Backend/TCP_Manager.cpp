@@ -48,7 +48,7 @@ void TCPManager::connectToHost(const QHostAddress &ip, quint16 port = 45454)
 }
 
 
-void TCPManager::sendData()
+void TCPManager::sendData(const QString &filePath)
 {
     qDebug("Sending data");
     for (int i = 0; i < m_backend->m_filesManager.m_selectedFiles.count(); ++i) {

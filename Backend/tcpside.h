@@ -4,6 +4,8 @@
 
 #include <QObject>
 #include <QTcpServer>
+#include <QMimeDatabase>
+#include <QIODevice>
 
 
 class Backend;
@@ -18,7 +20,7 @@ public:
 
     void startServer(quint16 port = 45454);
     void connectToHost(const QHostAddress &ip, quint16 port);
-    void sendData();
+    void sendData(const QString &filePath);
     void doTCP_Connection();
 
 private:

@@ -23,6 +23,7 @@ inline QDataStream &operator<<(QDataStream &out, const FileHeader &header)
                << header.mimeType
                << header.created;
 }
+
 inline QDataStream &operator>>(QDataStream &in, FileHeader &header)
 {
     return in >> header.fileName
