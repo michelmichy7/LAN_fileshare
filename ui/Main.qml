@@ -18,6 +18,7 @@ Window {
     property string senderRequest: ""
     property int user //0 sender //1 receiver
     property string conState: ""
+    property string actState: ""
 
     Connections {
         target: backend.udpManager
@@ -28,21 +29,25 @@ Window {
         }
 
 }
-    Component.onCompleted: {
+   /*Component.onCompleted: {
         console.log("Initial state:", backend.connectionState); // This forces QML to track it
-    }
+    }*/
 
     Connections {
         target: backend
         function onConnectionStateChanged() {
             conState = backend.connectionState
-            console.log("New state:", conState)
+            console.log("New ConState:", conState)
 
 
             if (conState === "5") {
                 loader.source = ""
                 loader.source = "FileShare.qml"
             }
+        }
+        function onActivityStateChanged() {
+            actState = backend.activityState
+            console.log("New ActState", actState)
         }
     }
 

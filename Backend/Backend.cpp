@@ -45,17 +45,19 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
     else if (state == StatusClass::TCP_CONNECTED) {
         //m_udpManager.sendPacket("TCP_REQUEST", m_theirValue);
     }
-    else if (state == StatusClass::TCP_SENDING_FILES) {
-        m_tcpManager.sendData();
-    }
-    if (state == StatusClass::SELECTING_FILES) {
-        m_filesManager.openFileDialog();
-    }
-    QTimer::singleShot(0, this, [this]() {
         emit connectionStateChanged();
-    });
 }
 
+void Backend::setActivityState(StatusClass::ActivityState state) {
+     if (state == StatusClass::SENDING_FILES) {
+        m_tcpManager.sendData();
+    } else if (state == StatusClass::RECEIVING_FILES) {
+         m_filesManager.openFileDialog();
+    } else if (state == StatusClass::SELECTING_FILES) {
+        m_filesManager.openFileDialog();
+    }
+    emit activityStateChanged();
+}
 
 void Backend::tcpConnection_REC(const QString &ip)
 {

@@ -12,10 +12,6 @@ TCPManager::TCPManager(Backend* backend, QObject *parent)
     tcpSocket = nullptr;
 }
 
-void TCPManager::doTCP_Connection() {
-
-}
-
 void TCPManager::startServer(quint16 port)
 {
     tcpServer = new QTcpServer(this);
@@ -64,6 +60,16 @@ void TCPManager::sendData()
 
 void TCPManager::onNewConnection()
 {
+    if (!m_clientSockets.isEmpty()) {
+        // Already have a client, reject the new connection immediately
+        QTcpSocket *newSocket = tcpServer->nextPendingConnection();
+        qDebug() << "Rejected new client from" << newSocket->peerAddress().toString() << "because a client is already connected";
+        newSocket->disconnectFromHost();
+        newSocket->deleteLater();
+        return;
+    }
+
+    // No clients connected — accept this new connection
     QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
 
     connect(clientSocket, &QTcpSocket::readyRead, this, &TCPManager::onReadyRead);
@@ -77,11 +83,12 @@ void TCPManager::onNewConnection()
 
 void TCPManager::onReadyRead()
 {
-        QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
-        if (!socket) return;
+    qDebug() << "Data received (TCP stub).";
+    QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+    if (!socket) return;
 
-        QByteArray data = socket->readAll();
-        qDebug() << "Received data:" << data;
+    QByteArray data = socket->readAll();
+    qDebug() << "Received data:" << data;
 
 
 
@@ -97,82 +104,3 @@ void TCPManager::onDisconnected()
     m_clientSockets.removeAll(socket);
     socket->deleteLater();
 }
-
-
-/*
- TCPSide::TCPSide(QObject *parent)
-    : QObject{parent}
-{}
-
-TCPClient::TCPClient(Backend *m_backend, QObject *parent)
-    : QObject{parent}, m_backend(m_backend)
-{
-
-}
-
-void TCPClient::tcpConnection_REC(const QString &ip) {
-    if (!tcpSocket) {
-        tcpSocket = new QTcpSocket(this);
-
-        tcpSocket->connectToHost(ip, 45454);
-
-         connect(tcpSocket, &QTcpSocket::connected, this, [this, ip]()  {
-            qDebug() << "Connected TCP socket: " << ip;
-            emit m_backend->tcpConnected(ip);
-        });
-    }
-}
-
-TCPServer::TCPServer(QObject *parent)
-    : QObject{parent}
-{
-
-}
-void TCPServer::tcpConnection_SEN(const QString &ip) {
-    if (!tcpServer) {
-        tcpServer = new QTcpServer(this);
-
-        QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
-        if (clientSocket) {
-            qDebug() << "Accepted TCP connection from: " << clientSocket->peerAddress().toString();
-            emit tcpConnected(ip);
-        }
-
-    tcpServer->listen(QHostAddress(ip), 45454);
-    }
-}
-
-    void TCPClient::transferFilesTCP() {
-        FileDialogHelper dialog;
-        QStringList pastedFiles = dialog.openFileDialog();
-        if (!tcpSocket || tcpSocket->state() != QAbstractSocket::ConnectedState) {
-            qDebug() << "TCP socket not connected.";
-            return;
-        }
-
-        for (const QString &item: pastedFiles) {
-            qDebug() << item;
-        }
-
-       /*
-        if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Failed to open file:" << file.errorString();
-            return;
-        }
-
-        QByteArray fileData = file.readAll();
-        file.close();
-
-        // Send file size (8 bytes)
-        qint64 fileSize = fileData.size();
-        tcpSocket->write(reinterpret_cast<char*>(&fileSize), sizeof(qint64));
-
-        // Send file data
-        tcpSocket->write(fileData);
-        tcpSocket->flush();
-
-        qDebug() << "Sent file over TCP: " << filePath;
-
-    }
-*/
-

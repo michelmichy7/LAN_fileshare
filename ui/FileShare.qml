@@ -89,11 +89,11 @@ Rectangle {
             }
 
             MouseArea {
-                id: selectArea
+                id: mouseArea
                 anchors.fill: parent
                 onClicked: {
-                    backend.setConnectionState(StatusClass.SELECTING_FILES)
-                    filePaths = files
+                    backend.setActivityState(StatusClass.SELECTING_FILES)
+                    //filePaths = files
                 }
             }
         }
@@ -116,7 +116,7 @@ Rectangle {
                 id: sendArea
                 anchors.fill: parent
                 onClicked: {
-                    backend.setConnectionState(StatusClass.TCP_SENDING_FILES)
+                    backend.setActivityState(StatusClass.SENDING_FILES)
                 }
             }
         }

@@ -28,7 +28,7 @@ class FileDialogHelper : public QObject
     Q_OBJECT
 public:
     explicit FileDialogHelper(QObject *parent = nullptr);
-        Q_PROPERTY(QStringList selectedFiles READ selectedFiles NOTIFY selectedFilesChanged)
+    Q_PROPERTY(QStringList selectedFiles READ selectedFiles NOTIFY selectedFilesChanged)
     QStringList m_selectedFiles;
     Q_INVOKABLE QStringList openFileDialog();
     QStringList selectedFiles() const { return m_selectedFiles; }
@@ -50,12 +50,17 @@ public:
         CONNECTION_APPROVED,
 
         TCP_CONNECTED,
-        TCP_DISCONNECTED,
-        TCP_SENDING_FILES,
-        TCP_RECEIVING_FILES,
-        SELECTING_FILES
+        TCP_DISCONNECTED
     };
+    enum ActivityState {
+        NONE = 0,
+        SELECTING_FILES,
+        SENDING_FILES,
+        RECEIVING_FILES
+    };
+
     Q_ENUM(ConnectionState)
+    Q_ENUM(ActivityState)
 };
 
 
@@ -87,10 +92,32 @@ class Backend : public QObject
     Q_PROPERTY(QString theirIp READ theirIp WRITE setTheirIp NOTIFY theirIPChanged)
     Q_PROPERTY(QObject* udpManager READ udpManager CONSTANT)
     Q_PROPERTY(QObject* tcpManager READ tcpManager CONSTANT)
-    Q_PROPERTY(StatusClass::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
+
     Q_PROPERTY(FileDialogHelper* filesManager READ getFilesManager CONSTANT)
 
+    //                    ----- States -----
+    Q_PROPERTY(StatusClass::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
+    Q_PROPERTY(StatusClass::ActivityState activityState READ activityState NOTIFY activityStateChanged)
 
+public:
+    StatusClass::ActivityState activityState() const {
+        return m_activityState;
+    }
+    Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
+    Q_INVOKABLE void setActivityState(StatusClass::ActivityState state);
+
+    StatusClass::ConnectionState connectionState() const {
+        // You must return the actual state from somewhere — e.g.:
+        return m_connectionState;
+    }
+signals:
+    void activityStateChanged();
+
+private:
+    StatusClass::ConnectionState m_connectionState = StatusClass::IDLE;
+
+private:
+    StatusClass::ActivityState m_activityState = StatusClass::NONE;
     FileDialogHelper* getFilesManager() { return &m_filesManager; }
 
 public:
@@ -103,7 +130,7 @@ public:
     QObject* udpManager() const;
     QObject* tcpManager() const;
     QObject* filesManager() const;
-    Q_INVOKABLE void setConnectionState(StatusClass::ConnectionState state);
+
 
     ListModel* model() const { return m_model; }
 
@@ -124,10 +151,7 @@ public:
         }
     }
 
-    StatusClass::ConnectionState connectionState() const {
-        // You must return the actual state from somewhere — e.g.:
-        return m_connectionState;
-    }
+
 
 
 signals:
@@ -145,8 +169,6 @@ private:
     QHostAddress m_theirValue;
 
 
-private:
-    StatusClass::ConnectionState m_connectionState = StatusClass::IDLE;
 
 
 private slots:
