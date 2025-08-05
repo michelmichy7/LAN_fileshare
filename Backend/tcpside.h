@@ -3,7 +3,9 @@
 
 
 #include <QObject>
+#include <QTcpSocket>
 #include <QTcpServer>
+
 #include <QMimeDatabase>
 #include <QIODevice>
 

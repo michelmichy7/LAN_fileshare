@@ -5,8 +5,7 @@
 
 #include <QObject>
 #include <QUdpSocket>
-#include <QTcpSocket>
-#include <QTcpServer>
+
 #include <QDebug>
 #include <QList>
 #include <QPair>

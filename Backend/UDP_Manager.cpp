@@ -106,11 +106,13 @@ void UDPManager::onReadyRead()
         }
         else if (datagram == "CONNECTION_REQUEST") {
             qDebug() << "::Received connection request from:" << rawIP;
+            m_backend->setTheirIp(rawIP);
             emit showConnectionPage(rawIP);
             qDebug("ConBox emitted");
         }
         else if (datagram == "CONNECTION_APPROVED") {
             qDebug() << "Connection approved by:" << rawIP;
+            m_backend->setTheirIp(rawIP);
             m_backend->setConnectionState(StatusClass::CONNECTION_APPROVED);
         }
         else if (datagram == "TCP_CONNECTED") {

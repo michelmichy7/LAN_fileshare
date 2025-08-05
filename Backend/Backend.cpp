@@ -39,6 +39,7 @@ void Backend::setConnectionState(StatusClass::ConnectionState state)
         m_udpManager.sendPacket("CONNECTION_REQUEST", m_theirValue);
     }
     else if (state == StatusClass::CONNECTION_APPROVED) {
+        qDebug() << "STORED:" << m_theirValue;
         m_udpManager.sendPacket("CONNECTION_APPROVED", m_theirValue);
         m_tcpManager.startServer();
         m_tcpManager.connectToHost(m_theirValue, 45454);
