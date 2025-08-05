@@ -6,7 +6,7 @@ UDPManager::UDPManager(Backend* backend, QObject *parent)
     : QObject(parent), m_backend(backend)
 {
     senderSocket = new QUdpSocket(this);
-    bool success = senderSocket->bind(QHostAddress::Any, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+    bool success = senderSocket->bind(QHostAddress::AnyIPv4, 45454, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
     if (!success) {
         qDebug() << "Bind Failed: " << senderSocket->errorString();
         return;
@@ -74,10 +74,8 @@ void UDPManager::onReadyRead()
         QByteArray datagram;
         quint16 senderPort;
 
-        // Resize the datagram buffer BEFORE reading
         datagram.resize(senderSocket->pendingDatagramSize());
 
-        // Read the datagram
         qint64 bytesRead = senderSocket->readDatagram(datagram.data(), datagram.size(), &senderIP, &senderPort);
 
         if (bytesRead == -1) {
@@ -85,21 +83,24 @@ void UDPManager::onReadyRead()
             continue;
         }
 
-        // Convert IP address to string AFTER reading
         QString rawIP = senderIP.toString();
 
-        // Handle IPv4-mapped IPv6 addresses
+        // Handle IPv4-mapped IPv6
         if (rawIP.startsWith("::ffff:")) {
             rawIP = rawIP.mid(7);
+        }
+
+        // Ignore packets from self
+        if (m_localIPs.contains(rawIP)) {
+            qDebug() << "Ignored self-response from:" << rawIP;
+            continue;
         }
 
         qDebug() << "Received datagram from:" << rawIP << "Content:" << datagram;
 
         if (datagram == "FIND_DEVICE") {
             qDebug() << "Found a Device at:" << rawIP;
-            //if (!m_localIPs.contains(rawIP)) {
-                m_backend->addDev_ToList(rawIP);
-            //}
+            m_backend->addDev_ToList(rawIP);
         }
         else if (datagram == "CONNECTION_REQUEST") {
             qDebug() << "::Received connection request from:" << rawIP;
@@ -107,7 +108,7 @@ void UDPManager::onReadyRead()
             qDebug("ConBox emitted");
         }
         else if (datagram == "CONNECTION_APPROVED") {
-
+            qDebug() << "Connection approved by:" << rawIP;
         }
         else if (datagram == "TCP_CONNECTED") {
             qDebug() << "Connected: " << rawIP;
