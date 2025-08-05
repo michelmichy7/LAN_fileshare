@@ -91,10 +91,12 @@ void UDPManager::onReadyRead()
         }
 
         // Ignore packets from self
-        if (m_localIPs.contains(rawIP)) {
+        // Ignore packets from self (local IPs or localhost)
+        if (m_localIPs.contains(rawIP) || rawIP == "127.0.0.1") {
             qDebug() << "Ignored self-response from:" << rawIP;
             continue;
         }
+
 
         qDebug() << "Received datagram from:" << rawIP << "Content:" << datagram;
 
@@ -109,6 +111,7 @@ void UDPManager::onReadyRead()
         }
         else if (datagram == "CONNECTION_APPROVED") {
             qDebug() << "Connection approved by:" << rawIP;
+            m_backend->setConnectionState(StatusClass::CONNECTION_APPROVED);
         }
         else if (datagram == "TCP_CONNECTED") {
             qDebug() << "Connected: " << rawIP;
