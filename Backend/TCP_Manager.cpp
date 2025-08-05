@@ -87,9 +87,20 @@ void TCPManager::sendFile(const QString &filePath)
     header.mimeType = QMimeDatabase().mimeTypeForFile(fileInfo).name(); // optional
 
     // Send the header
-    QDataStream out(tcpSocket);
-    out.setVersion(QDataStream::Qt_6_9); // Or whatever version you're using
-    out << header;
+    QByteArray headerBlock;
+    QDataStream headerStream(&headerBlock, QIODevice::WriteOnly);
+    headerStream.setVersion(QDataStream::Qt_6_9);
+    headerStream << header;
+
+    qint32 headerSize = headerBlock.size();
+    QByteArray sizePrefix;
+    QDataStream sizeStream(&sizePrefix, QIODevice::WriteOnly);
+    sizeStream.setVersion(QDataStream::Qt_6_9);
+    sizeStream << headerSize;
+
+    tcpSocket->write(sizePrefix);      // Write 4 bytes: size of header
+    tcpSocket->write(headerBlock);     // Write actual header
+
 
     // Send file data in chunks (avoid large memory usage)
     const int chunkSize = 64 * 1024; // 64KB
