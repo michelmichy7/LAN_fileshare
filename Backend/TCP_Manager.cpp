@@ -88,7 +88,7 @@ void TCPManager::sendFile(const QString &filePath)
 
     // Send the header
     QDataStream out(tcpSocket);
-    out.setVersion(QDataStream::Qt_6_5); // Or whatever version you're using
+    out.setVersion(QDataStream::Qt_6_9); // Or whatever version you're using
     out << header;
 
     // Send file data in chunks (avoid large memory usage)
@@ -134,54 +134,63 @@ void TCPManager::onNewConnection()
 }
 void TCPManager::onReadyRead()
 {
-    QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());  // ✅ correct source socket
-    if (!socket)
-        return;
+    QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
+    if (!socket) return;
+
+    static QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_6_5);
 
     static FileHeader currentHeader;
     static QFile currentFile;
     static qint64 bytesReceived = 0;
     static bool headerRead = false;
 
-    QDataStream in(socket);  // ✅ use the correct socket
-    in.setVersion(QDataStream::Qt_6_5); // Match sending version
+    while (true) {
+        if (!headerRead) {
+            if (in.atEnd()) return;
 
-    if (!headerRead) {
-        if (socket->bytesAvailable() < sizeof(FileHeader))
-            return; // Wait for complete header
+            // Try reading header
+            in >> currentHeader;
+            if (in.status() != QDataStream::Ok) return;
 
-        in >> currentHeader;
-        headerRead = true;
+            headerRead = true;
+            bytesReceived = 0;
 
-        // Prepare file path
-        QString savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
-                           + "/NearbyFiles/" + currentHeader.fileName;
-        QDir().mkpath(QFileInfo(savePath).absolutePath());
+            // Prepare save path
+            QString savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
+                               + "/NearbyFiles/" + currentHeader.fileName;
+            QDir().mkpath(QFileInfo(savePath).absolutePath());
 
-        currentFile.setFileName(savePath);
-        if (!currentFile.open(QIODevice::WriteOnly)) {
-            qDebug() << "Failed to open file for writing:" << savePath;
-            headerRead = false;
-            return;
+            currentFile.setFileName(savePath);
+            if (!currentFile.open(QIODevice::WriteOnly)) {
+                qDebug() << "Failed to open file for writing:" << savePath;
+                headerRead = false;
+                return;
+            }
+
+            qDebug() << "Receiving file:" << currentHeader.fileName
+                     << "Size:" << currentHeader.fileSize;
         }
 
-        bytesReceived = 0;
-        qDebug() << "Receiving file:" << currentHeader.fileName << "Size:" << currentHeader.fileSize;
-    }
+        // Now read file data
+        while (socket->bytesAvailable() > 0 && bytesReceived < currentHeader.fileSize) {
+            QByteArray chunk = socket->read(qMin(currentHeader.fileSize - bytesReceived, qint64(64 * 1024)));
+            currentFile.write(chunk);
+            bytesReceived += chunk.size();
+        }
 
-    // Read data chunk
-    QByteArray data = socket->readAll();
-    currentFile.write(data);
-    bytesReceived += data.size();
+        if (bytesReceived >= currentHeader.fileSize) {
+            currentFile.close();
+            qDebug() << "✅ File received successfully:" << currentHeader.fileName;
 
-    if (bytesReceived >= currentHeader.fileSize) {
-        currentFile.close();
-        qDebug() << "✅ File received successfully:" << currentFile.fileName();
-
-        // Reset for next file
-        headerRead = false;
+            headerRead = false;
+            return; // done with this file — wait for next read
+        } else {
+            return; // wait for more data
+        }
     }
 }
+
 
 
 
