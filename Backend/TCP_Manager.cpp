@@ -132,25 +132,28 @@ void TCPManager::onNewConnection()
 
     qDebug() << "New client connected from" << clientSocket->peerAddress().toString();
 }
-
 void TCPManager::onReadyRead()
 {
+    QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());  // ✅ correct source socket
+    if (!socket)
+        return;
+
     static FileHeader currentHeader;
     static QFile currentFile;
     static qint64 bytesReceived = 0;
     static bool headerRead = false;
 
-    QDataStream in(tcpSocket);
-    in.setVersion(QDataStream::Qt_6_5); // Match sender
+    QDataStream in(socket);  // ✅ use the correct socket
+    in.setVersion(QDataStream::Qt_6_5); // Match sending version
 
     if (!headerRead) {
-        if (tcpSocket->bytesAvailable() < sizeof(FileHeader))
-            return; // Wait until full header is available
+        if (socket->bytesAvailable() < sizeof(FileHeader))
+            return; // Wait for complete header
 
         in >> currentHeader;
         headerRead = true;
 
-        // Setup file for writing
+        // Prepare file path
         QString savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
                            + "/NearbyFiles/" + currentHeader.fileName;
         QDir().mkpath(QFileInfo(savePath).absolutePath());
@@ -166,19 +169,20 @@ void TCPManager::onReadyRead()
         qDebug() << "Receiving file:" << currentHeader.fileName << "Size:" << currentHeader.fileSize;
     }
 
-    // Read file data
-    QByteArray data = tcpSocket->readAll();
+    // Read data chunk
+    QByteArray data = socket->readAll();
     currentFile.write(data);
     bytesReceived += data.size();
 
     if (bytesReceived >= currentHeader.fileSize) {
         currentFile.close();
-        qDebug() << "File received:" << currentFile.fileName();
+        qDebug() << "✅ File received successfully:" << currentFile.fileName();
 
         // Reset for next file
         headerRead = false;
     }
 }
+
 
 
 void TCPManager::onDisconnected()
