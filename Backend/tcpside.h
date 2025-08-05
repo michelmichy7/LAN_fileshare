@@ -20,7 +20,8 @@ public:
 
     void startServer(quint16 port = 45454);
     void connectToHost(const QHostAddress &ip, quint16 port);
-    void sendData(const QString &filePath);
+    void sendData();
+    void sendFile(const QString &filePath);
     void doTCP_Connection();
 
 private:

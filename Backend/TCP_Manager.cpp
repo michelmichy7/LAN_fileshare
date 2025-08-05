@@ -4,6 +4,10 @@
 
 #include <QFile>
 #include <qfileinfo.h>
+#include <QStandardPaths>
+#include <QFileInfo>
+#include <QDir>
+
 
 TCPManager::TCPManager(Backend* backend, QObject *parent)
     : QObject(parent), m_backend(backend)
@@ -48,17 +52,60 @@ void TCPManager::connectToHost(const QHostAddress &ip, quint16 port = 45454)
 }
 
 
-void TCPManager::sendData(const QString &filePath)
+void TCPManager::sendData()
 {
-    qDebug("Sending data");
-    for (int i = 0; i < m_backend->m_filesManager.m_selectedFiles.count(); ++i) {
-        qDebug() << "Index:" << i << "File:" << m_backend->m_filesManager.m_selectedFiles[i];
+    qDebug("Sending data...");
+    const auto &files = m_backend->m_filesManager.m_selectedFiles;
+
+    for (const QString &filePath : files) {
+        sendFile(filePath);  // use the dedicated function for one file
     }
-    if (tcpSocket && tcpSocket->state() == QTcpSocket::ConnectedState) {
-        //tcpSocket->write(data);
-    } else {
+}
+
+void TCPManager::sendFile(const QString &filePath)
+{
+    qDebug() << "Sending file:" << filePath;
+
+    if (!tcpSocket || tcpSocket->state() != QTcpSocket::ConnectedState) {
         qDebug() << "Not connected to any host.";
+        return;
     }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Failed to open file:" << filePath;
+        return;
+    }
+
+    // Prepare FileHeader
+    FileHeader header;
+    QFileInfo fileInfo(filePath);
+    header.fileName = fileInfo.fileName();
+    header.fileSize = file.size();
+    header.created = fileInfo.birthTime(); // Qt 5.10+ and Qt 6+
+
+    header.mimeType = QMimeDatabase().mimeTypeForFile(fileInfo).name(); // optional
+
+    // Send the header
+    QDataStream out(tcpSocket);
+    out.setVersion(QDataStream::Qt_6_5); // Or whatever version you're using
+    out << header;
+
+    // Send file data in chunks (avoid large memory usage)
+    const int chunkSize = 64 * 1024; // 64KB
+    QByteArray buffer;
+    while (!file.atEnd()) {
+        buffer = file.read(chunkSize);
+        tcpSocket->write(buffer);
+        tcpSocket->flush(); // ensure it's sent
+        if (!tcpSocket->waitForBytesWritten(-1)) {
+            qDebug() << "Failed to write data.";
+            break;
+        }
+    }
+
+    file.close();
+    qDebug() << "File sent successfully:" << header.fileName;
 }
 
 
@@ -88,16 +135,51 @@ void TCPManager::onNewConnection()
 
 void TCPManager::onReadyRead()
 {
-    qDebug() << "Data received (TCP stub).";
-    QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
-    if (!socket) return;
+    static FileHeader currentHeader;
+    static QFile currentFile;
+    static qint64 bytesReceived = 0;
+    static bool headerRead = false;
 
-    QByteArray data = socket->readAll();
-    qDebug() << "Received data:" << data;
+    QDataStream in(tcpSocket);
+    in.setVersion(QDataStream::Qt_6_5); // Match sender
 
+    if (!headerRead) {
+        if (tcpSocket->bytesAvailable() < sizeof(FileHeader))
+            return; // Wait until full header is available
 
+        in >> currentHeader;
+        headerRead = true;
 
+        // Setup file for writing
+        QString savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
+                           + "/NearbyFiles/" + currentHeader.fileName;
+        QDir().mkpath(QFileInfo(savePath).absolutePath());
+
+        currentFile.setFileName(savePath);
+        if (!currentFile.open(QIODevice::WriteOnly)) {
+            qDebug() << "Failed to open file for writing:" << savePath;
+            headerRead = false;
+            return;
+        }
+
+        bytesReceived = 0;
+        qDebug() << "Receiving file:" << currentHeader.fileName << "Size:" << currentHeader.fileSize;
+    }
+
+    // Read file data
+    QByteArray data = tcpSocket->readAll();
+    currentFile.write(data);
+    bytesReceived += data.size();
+
+    if (bytesReceived >= currentHeader.fileSize) {
+        currentFile.close();
+        qDebug() << "File received:" << currentFile.fileName();
+
+        // Reset for next file
+        headerRead = false;
+    }
 }
+
 
 void TCPManager::onDisconnected()
 {
