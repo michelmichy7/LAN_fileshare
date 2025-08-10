@@ -60,8 +60,9 @@ void TCPManager::sendData()
     for (const QString &filePath : files) {
         sendFile(filePath);  // use the dedicated function for one file
     }
-}
-
+}// =======================
+// Sending side
+// =======================
 void TCPManager::sendFile(const QString &filePath)
 {
     qDebug() << "Sending file:" << filePath;
@@ -82,42 +83,42 @@ void TCPManager::sendFile(const QString &filePath)
     QFileInfo fileInfo(filePath);
     header.fileName = fileInfo.fileName();
     header.fileSize = file.size();
-    header.created = fileInfo.birthTime(); // Qt 5.10+ and Qt 6+
+    header.created = fileInfo.birthTime();
+    header.mimeType = QMimeDatabase().mimeTypeForFile(fileInfo).name();
 
-    header.mimeType = QMimeDatabase().mimeTypeForFile(fileInfo).name(); // optional
-
-    // Send the header
+    // Serialize header
     QByteArray headerBlock;
-    QDataStream headerStream(&headerBlock, QIODevice::WriteOnly);
-    headerStream.setVersion(QDataStream::Qt_6_9);
-    headerStream << header;
+    {
+        QDataStream headerStream(&headerBlock, QIODevice::WriteOnly);
+        headerStream.setVersion(QDataStream::Qt_6_9);
+        headerStream << header;
+    }
 
+    // Send header size (int32)
     qint32 headerSize = headerBlock.size();
     QByteArray sizePrefix;
-    QDataStream sizeStream(&sizePrefix, QIODevice::WriteOnly);
-    sizeStream.setVersion(QDataStream::Qt_6_9);
-    sizeStream << headerSize;
+    {
+        QDataStream sizeStream(&sizePrefix, QIODevice::WriteOnly);
+        sizeStream.setVersion(QDataStream::Qt_6_9);
+        sizeStream << headerSize;
+    }
 
-    tcpSocket->write(sizePrefix);      // Write 4 bytes: size of header
-    tcpSocket->write(headerBlock);     // Write actual header
+    tcpSocket->write(sizePrefix);
+    tcpSocket->write(headerBlock);
 
-
-    // Send file data in chunks (avoid large memory usage)
-    const int chunkSize = 64 * 1024; // 64KB
+    // Send file data in chunks
+    const int chunkSize = 64 * 1024;
     QByteArray buffer;
     while (!file.atEnd()) {
         buffer = file.read(chunkSize);
         tcpSocket->write(buffer);
-        tcpSocket->flush(); // ensure it's sent
-        if (!tcpSocket->waitForBytesWritten(-1)) {
-            qDebug() << "Failed to write data.";
-            break;
-        }
     }
 
     file.close();
     qDebug() << "File sent successfully:" << header.fileName;
 }
+
+
 
 
 
@@ -142,32 +143,43 @@ void TCPManager::onNewConnection()
     m_clientSockets.append(clientSocket);
 
     qDebug() << "New client connected from" << clientSocket->peerAddress().toString();
-}
+}// =======================
+// Receiving side
+// =======================
 void TCPManager::onReadyRead()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
     if (!socket) return;
 
-    static QDataStream in(socket);
-    in.setVersion(QDataStream::Qt_6_5);
-
+    // Static vars keep state between readyRead calls
+    static qint32 expectedHeaderSize = -1;
     static FileHeader currentHeader;
     static QFile currentFile;
     static qint64 bytesReceived = 0;
-    static bool headerRead = false;
+
+    QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_6_9);
 
     while (true) {
-        if (!headerRead) {
-            if (in.atEnd()) return;
+        // Step 1: Read header size (4 bytes)
+        if (expectedHeaderSize == -1) {
+            if (socket->bytesAvailable() < sizeof(qint32))
+                return; // wait for full size
+            in >> expectedHeaderSize;
+            continue; // loop to try reading header immediately
+        }
 
-            // Try reading header
-            in >> currentHeader;
-            if (in.status() != QDataStream::Ok) return;
+        // Step 2: Read header block
+        if (currentHeader.fileName.isEmpty()) {
+            if (socket->bytesAvailable() < expectedHeaderSize)
+                return; // wait for full header
 
-            headerRead = true;
-            bytesReceived = 0;
+            QByteArray headerBlock = socket->read(expectedHeaderSize);
+            QDataStream headerStream(&headerBlock, QIODevice::ReadOnly);
+            headerStream.setVersion(QDataStream::Qt_6_9);
+            headerStream >> currentHeader;
 
-            // Prepare save path
+            // Prepare file to save
             QString savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
                                + "/NearbyFiles/" + currentHeader.fileName;
             QDir().mkpath(QFileInfo(savePath).absolutePath());
@@ -175,29 +187,37 @@ void TCPManager::onReadyRead()
             currentFile.setFileName(savePath);
             if (!currentFile.open(QIODevice::WriteOnly)) {
                 qDebug() << "Failed to open file for writing:" << savePath;
-                headerRead = false;
+                // Reset for next transfer
+                expectedHeaderSize = -1;
+                currentHeader = FileHeader();
                 return;
             }
 
+            bytesReceived = 0;
             qDebug() << "Receiving file:" << currentHeader.fileName
                      << "Size:" << currentHeader.fileSize;
+            continue; // loop to try reading file immediately
         }
 
-        // Now read file data
-        while (socket->bytesAvailable() > 0 && bytesReceived < currentHeader.fileSize) {
+        // Step 3: Read file data
+        if (bytesReceived < currentHeader.fileSize) {
             QByteArray chunk = socket->read(qMin(currentHeader.fileSize - bytesReceived, qint64(64 * 1024)));
             currentFile.write(chunk);
             bytesReceived += chunk.size();
+
+            if (bytesReceived < currentHeader.fileSize)
+                return; // wait for more data
         }
 
+        // Step 4: File complete
         if (bytesReceived >= currentHeader.fileSize) {
             currentFile.close();
             qDebug() << "✅ File received successfully:" << currentHeader.fileName;
 
-            headerRead = false;
-            return; // done with this file — wait for next read
-        } else {
-            return; // wait for more data
+            // Reset for next file
+            expectedHeaderSize = -1;
+            currentHeader = FileHeader();
+            bytesReceived = 0;
         }
     }
 }
