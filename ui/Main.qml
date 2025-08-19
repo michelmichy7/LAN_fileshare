@@ -92,15 +92,23 @@ Window {
 
 
 
+    Column {
+        spacing: 20
+        anchors.centerIn: parent
 
-    Rectangle {
-        color: "#141414"
-            anchors.centerIn: parent
+        // Devices list
+        Rectangle {
+            color: "#141414"
+            width: 500
+            height: 350
+            radius: 20
+
             Rectangle {
                 color: "#202020"
-                width: 460; height: 300;
+                anchors.fill: parent
+                anchors.margins: 20
                 radius: 20
-                anchors.centerIn: parent
+
                 GridView {
                     anchors.fill: parent
                     anchors.margins: 20
@@ -124,23 +132,44 @@ Window {
                             }
                         }
 
-                        ComputerIcon {
+                        Column {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 5
                             anchors.centerIn: parent
-                            anchors.topMargin: 10
-                            z: 3
-                        }
 
-                        Text {
-                            text: model.display
-                            anchors.bottom: parent.bottom
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.bottomMargin: 10
-                            color: "white"
+                            ComputerIcon {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                            }
+
+                            Text {
+                                text: model.display
+                                color: "white"
+                                anchors.horizontalCenter: parent.horizontalCenter
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        // Selected IP display
+        Rectangle {
+            width: 200
+            height: 40
+            radius: 10
+            color: "#141414"
+            anchors.horizontalCenter: parent.horizontalCenter
+
+
+            Text {
+                anchors.centerIn: parent
+                text: "IP of this device: " + backend.localIp
+                color: "white"
+            }
         }
     }
+
 }
 /* OLD UI
     Rectangle {

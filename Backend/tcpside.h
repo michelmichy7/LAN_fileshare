@@ -1,7 +1,6 @@
 #ifndef TCPSIDE_H
 #define TCPSIDE_H
 
-
 #include <QObject>
 #include <QTcpSocket>
 #include <QTcpServer>
@@ -44,6 +43,5 @@ signals:
     void clientConnected(const QString &ip);
     void clientDisconnected();
 };
-
 
 #endif // TCPSIDE_H

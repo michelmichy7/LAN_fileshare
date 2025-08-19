@@ -60,7 +60,10 @@ void TCPManager::sendData()
     for (const QString &filePath : files) {
         sendFile(filePath);  // use the dedicated function for one file
     }
-}// =======================
+}
+
+
+// =======================
 // Sending side
 // =======================
 void TCPManager::sendFile(const QString &filePath)
@@ -143,7 +146,9 @@ void TCPManager::onNewConnection()
     m_clientSockets.append(clientSocket);
 
     qDebug() << "New client connected from" << clientSocket->peerAddress().toString();
-}// =======================
+}
+
+// =======================
 // Receiving side
 // =======================
 void TCPManager::onReadyRead()

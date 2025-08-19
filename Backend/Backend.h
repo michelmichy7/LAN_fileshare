@@ -29,6 +29,7 @@ public:
     QStringList m_selectedFiles;
     Q_INVOKABLE QStringList openFileDialog();
     QStringList selectedFiles() const { return m_selectedFiles; }
+
 signals:
     void selectedFilesChanged();
 };
@@ -96,7 +97,13 @@ class Backend : public QObject
     Q_PROPERTY(StatusClass::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
     Q_PROPERTY(StatusClass::ActivityState activityState READ activityState NOTIFY activityStateChanged)
 
+    Q_PROPERTY(QString localIp READ getPreferredLocalIP NOTIFY localIpChanged)
+
 public:
+    QString getPreferredLocalIP() const {
+        return m_udpManager.getPreferredLocalIP();
+    }
+
     StatusClass::ActivityState activityState() const {
         return m_activityState;
     }
@@ -112,6 +119,7 @@ private:
 signals:
     void connectionStateChanged();
     void activityStateChanged();
+    void localIpChanged();
 
 
 private:

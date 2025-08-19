@@ -16,29 +16,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("backend", &backend);
     engine.rootContext()->setContextProperty("listModel", backend.model());
 
-/*
-    TCPServer tcpServer;
-    engine.rootContext()->setContextProperty("tcpServer", &tcpServer);
-
-    TCPClient tcpClient(&backend);
-    engine.rootContext()->setContextProperty("tcpClient", &tcpClient);
-
-    engine.rootContext()->setContextProperty("udpManager", backend.udpManager());
-*/
-    // You had udpReceiver commented out
-    /*
-    UDPSender udpReceiver(&backend);
-    engine.rootContext()->setContextProperty("udpReceiver", &udpReceiver);
-    */
-
     FileDialogHelper fileDialogHelper;
     engine.rootContext()->setContextProperty("FileDialogHelper", &fileDialogHelper);
     // Register enum type for QML access
     qmlRegisterUncreatableType<StatusClass>("LAN.Backend", 1, 0, "StatusClass", "Not creatable as it is an enum type");
-
-    // Connect signals
-   /* QObject::connect(&backend, &Backend::tcpConnected,
-                     qobject_cast<UDPManager*>(backend.udpManager()), &UDPManager::sendStatusPacket);*/
 
 
     // Handle QML load failure
