@@ -81,8 +81,6 @@ signals:
 
 };
 
-
-
 class Backend : public QObject
 {
     Q_OBJECT
