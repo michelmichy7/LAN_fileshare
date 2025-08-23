@@ -47,13 +47,11 @@ QStringList UDPManager::getLocalIPs() const
 
 QString UDPManager::getPreferredLocalIP() const
 {
-    // Try to find a 192.168.x.x first
     for (const QString &ip : getLocalIPs()) {
         if (ip.startsWith("192.168.")) {
             return ip;
         }
     }
-    // Fall back: return first available if no 192.168.x.x
     return getLocalIPs().isEmpty() ? QString() : getLocalIPs().first();
 }
 

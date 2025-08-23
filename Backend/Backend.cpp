@@ -65,22 +65,6 @@ void Backend::setActivityState(StatusClass::ActivityState state) {
     emit activityStateChanged();
 }
 
-
-void Backend::tcpConnection_REC(const QString &ip)
-{
-
-}
-
-void Backend::tcpConnection_SEN(const QString &ip)
-{
-
-}
-
-void Backend::transferFilesTCP()
-{
-
-}
-
 void Backend::addDev_ToList(const QString &ip)
 {
     m_model->addItem(ip);

@@ -42,7 +42,7 @@ public:
 
     enum ConnectionState {
         IDLE = 0,
-        DISCOVERING_DEVICES, //if going back to this state, system wouldnt have to send packet everytime, to prevent spam of packets
+        DISCOVERING_DEVICES,
         TOLD_ABOUT_SELF,
         REQUESTING_FOR_CONNECTION,
         CONNECTION_APPROVED,
@@ -143,10 +143,7 @@ public:
 
     ListModel* model() const { return m_model; }
 
-    Q_INVOKABLE void tcpConnection_REC(const QString &ip);
-    Q_INVOKABLE void tcpConnection_SEN(const QString &ip);
     QString message;
-    Q_INVOKABLE void transferFilesTCP();
 
     void addDev_ToList(const QString &ip);
 
@@ -168,17 +165,10 @@ signals:
 
 
 private:
-    //void sendStatusPacket(const QString &ip);
     UDPManager m_udpManager;
     TCPManager m_tcpManager;
 
     QHostAddress m_theirValue;
-
-
-
-
-private slots:
-    //void onDoConnectionBox(const QString &ip);
 };
 
 

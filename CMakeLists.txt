@@ -38,6 +38,7 @@ qt_add_resources(appLAN_fileshare "resources"
     PREFIX /
     FILES
         ui/Icons/Computer4x.png
+        ui/Icons/logoLAN_FILESHARE.png
 )
 
 set_target_properties(appLAN_fileshare PROPERTIES

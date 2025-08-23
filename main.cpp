@@ -5,10 +5,12 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <qicon.h>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/ui/Icons/logoLAN_FILESHARE.png"));
     QQmlApplicationEngine engine;
 
 
@@ -18,6 +20,7 @@ int main(int argc, char *argv[])
 
     FileDialogHelper fileDialogHelper;
     engine.rootContext()->setContextProperty("FileDialogHelper", &fileDialogHelper);
+
     // Register enum type for QML access
     qmlRegisterUncreatableType<StatusClass>("LAN.Backend", 1, 0, "StatusClass", "Not creatable as it is an enum type");
 

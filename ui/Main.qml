@@ -13,10 +13,7 @@ Window {
     title: qsTr("Nearby File Sender")
     color: "#141414"
 
-
-
     property string senderRequest: ""
-    property int user //0 sender //1 receiver
     property string conState: ""
     property string actState: ""
 
@@ -25,13 +22,9 @@ Window {
         function onShowConnectionPage(message) {
             console.log("QML ConPage");
             senderRequest = message
-            overlay.source = "ConnectionRequest.qml" //DONE: on discard is needed to be changed state back to discovering
+            overlay.source = "ConnectionRequest.qml"
         }
-
 }
-   /*Component.onCompleted: {
-        console.log("Initial state:", backend.connectionState); // This forces QML to track it
-    }*/
 
     Connections {
         target: backend
@@ -59,7 +52,6 @@ Window {
             if (loader.item && loader.item.hasOwnProperty("senderRequest")) {
                 loader.item.senderRequest = senderRequest
             }
-
         }
     }
     Loader {
@@ -79,11 +71,8 @@ Window {
             item.requestAccept.connect(function() {
                 backend.setConnectionState(StatusClass.CONNECTION_APPROVED)
                 overlay.source = ""
-
-                //if (backend.connectionState === StatusClass.CONNECTION_APPROVED) {
-                        //loader.source = "ConnectionRequest.qml"
-                //}
             })
+
             item.doConnection.connect(function() {
                 backend.tcpConnection_REC(senderRequest)
             })
@@ -169,71 +158,4 @@ Window {
             }
         }
     }
-
 }
-/* OLD UI
-    Rectangle {
-        width: 100
-        height: 100
-        anchors.centerIn: parent
-        color: "#141414"
-
-        Column {
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 15
-
-            Text {
-                text: "How do you want to transfer?"
-                color: "white"
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Rectangle {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 95
-                height: 40
-                radius: 15
-                color: "white"
-                Text {
-                    text: "Send"
-                    color: "black"
-                    anchors.centerIn: parent
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        backend.setConnectionState(StatusClass.DISCOVERING_DEVICES)
-
-                        loader.source = "Send_UI.qml"
-                        user = 0
-                    }
-                }
-            }
-
-            Rectangle {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 95
-                height: 40
-                radius: 15
-                color: "white"
-                Text {
-                    text: "Receive"
-                    color: "black"
-                    anchors.centerIn: parent
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        backend.setConnectionState(StatusClass.TOLD_ABOUT_SELF)
-
-
-                        loader.source = "Receive_UI.qml"
-                        user = 1
-                    }
-
-                }
-            }
-        }
-    }
-}
-*/

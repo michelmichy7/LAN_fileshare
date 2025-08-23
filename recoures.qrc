@@ -2,5 +2,6 @@
 <RCC>
     <qresource prefix="/">
         <file>ui/Icons/Computer4x</file>
+	<file>ui/Icons/logoLAN_FILESHARE.png</file>
     </qresource>
 </RCC>

@@ -78,12 +78,12 @@ Rectangle {
             width: 120
             height: 35
             radius: 15
-            color: mouseArea.pressed ? "#e0e0e0" : "white"
+            color: mouseArea.pressed ? "#2B3740" : "#36454F"
             anchors.horizontalCenter: parent.horizontalCenter
 
             Text {
                 text: "Select Files"
-                color: "black"
+                color: "white"
                 anchors.centerIn: parent
                 font.pixelSize: 12
             }
@@ -93,7 +93,6 @@ Rectangle {
                 anchors.fill: parent
                 onClicked: {
                     backend.setActivityState(StatusClass.SELECTING_FILES)
-                    //filePaths = files
                 }
             }
         }
@@ -102,11 +101,11 @@ Rectangle {
             width: 120
             height: 35
             radius: 15
-            color: mouseArea.pressed ? "#e0e0e0" : "white"
+            color: sendArea.pressed ? "#F2EDED" : "#FFFAFA"
             anchors.horizontalCenter: parent.horizontalCenter
 
             Text {
-                text: "Send Files"
+                text: "Send"
                 color: "black"
                 anchors.centerIn: parent
                 font.pixelSize: 12

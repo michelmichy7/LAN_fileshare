@@ -56,34 +56,4 @@ private slots:
     void onReadyRead();
 };
 
-
-/*
-class UDPReceiver : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(ListModel* model READ model CONSTANT)
-public:
-    explicit UDPReceiver(Backend* backend, QObject *parent = nullptr);
-    ListModel* model() const { return m_model; }
-
-    Q_INVOKABLE void catchPacket();
-    Q_INVOKABLE void sendPacket();
-
-
-signals:
-    void showConnectionPage(const QString &message);
-
-    void tcpConnected(const QString &ip);
-
-
-private slots:
-    void onReadyRead();
-    void onDoConnectionBox(const QString &ip);
-
-private:
-    Backend* m_backend;
-    ListModel* m_model = nullptr;
-    QUdpSocket *catcherSocket = nullptr;
-};*/
-
 #endif // UDPSIDE_H
